@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+begin
+  require File.dirname(__FILE__) + "/../vendor/html_mockup/lib/html_mockup/cli"
+rescue LoadError => e
+  require 'rubygems'
+  require 'html_mockup/cli'
+end
+
+
+a = ARGV.dup
+a.unshift("serve")
+a.unshift(File.dirname(__FILE__) + "/../html")
+HtmlMockup::Cli.start(a)

@@ -1,0 +1,81 @@
+== HtmlMockup
+
+HTML Mockup is a set of tools to create self-containing HTML mockups. HtmlMockup gives you the flexibility
+of a templatinglanguage but at the same time keeps all HTML files viewable. HTML comments are 
+used to  determine what partial (sub-template) to render.
+
+HtmlMockup also provides tools for HTML validation. 
+
+=== Requirements
+HtmlMockup requires the following dependencies
+
+* Ruby 1.8.x (not tested in 1.9.x)
+* Rubygems
+* Thor (to use mockup binary)
+* Rack > 0.3 (to use mockup serve) 
+
+=== Usage
+
+Just write regular HTML files and include comment's like this: 
+
+  <!-- [START:partial_name] -->Text<!-- [STOP:partial_name] -->
+
+The data between the tags will be replaced by the partial contents. Partials are searched in
+"../partials" relative to the directory the script you run resides in. This can be overridden with
+commandline parameters. Partials always must have a .part.r?html ending and are evaluated as ERB during
+insertion.
+
+=== Syntax for HTML files
+
+==== Standard partials
+
+  <!-- [START:partial_name] -->Text<!-- [STOP:partial_name] -->
+
+==== Pass parameters to partials
+
+You can pass in parameters to partials in the format of key=value&key2=value2 (it's just a regular CGI
+query string and is parsed by CGI#parse). The partials wich are evaluated as ERB can access the variables
+through standard instance methods. The example below would create the instance variable @key.
+
+  <!-- [START:partial_name?key=value] -->Text<!-- [STOP:partial_name] -->
+
+
+=== Mockup commandline
+
+==== mockup convert [directory/file]
+
+Convert can be called with a single html file or a directory. If a directory is specified all .html files
+will be converted. 
+
+*Warning:* Convert will overwrite the file itself!
+
+Options:
+--partial_path:: the path where the partial files can be found (*.part.html), defaults to director/../partials
+--filter:: The filter to use when finding templates within directory, defaults to *.html 
+
+==== mockup serve [directory/file]
+
+Serve can be used during development as a simple webserver (Webrick/Mongrel). It also supports
+on-the-fly HTML validation. 
+
+You can also call ./script/server just above the HTML directory.
+
+Options:
+--port:: The port the server should listen on. Defaults to 9000
+--partial_path:: the path where the partial files can be found (*.part.html), defaults to director/../partials
+--validate:: Flag to set wether or not we should validate all html files (defaults to false)
+
+==== mockup generate [directory]
+
+Generate creates a directory structure in directory for use with new HTML mockups.
+
+==== mockup validate [directory/file]
+
+Validates all files within directory or just file with the W3C validator webservice. 
+
+Options:
+--show_valid:: Flag to print a line for each valid file too (defaults to false)
+--filter:: What files should be validated, defaults to [^_]*.html
+
+=== Copyright & license
+Copyright (c) 2009 Flurin Egger, DigitPaint, MIT Style License. (see MIT-LICENSE)
