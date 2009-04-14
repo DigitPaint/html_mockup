@@ -9,6 +9,6 @@ end
 
 
 a = ARGV.dup
-a.unshift("serve")
 a.unshift(File.dirname(__FILE__) + "/../html")
+a.unshift("serve")
 HtmlMockup::Cli.start(a)
