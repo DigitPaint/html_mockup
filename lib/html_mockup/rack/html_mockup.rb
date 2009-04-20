@@ -31,12 +31,21 @@ module HtmlMockup
 
         if template_path = search_files.find{|p| File.exist?(p)}
           env["rack.errors"].puts "Rendering template #{template_path.inspect} (#{path.inspect})"
-          templ = ::HtmlMockup::Template.open(template_path, :partial_path => @partial_path)
-          resp = ::Rack::Response.new do |res|
-            res.status = 200
-            res.write templ.render
+          begin
+            templ = ::HtmlMockup::Template.open(template_path, :partial_path => @partial_path)
+            resp = ::Rack::Response.new do |res|
+              res.status = 200
+              res.write templ.render
+            end
+            resp.finish
+          rescue StandardError => e
+            env["rack.errors"].puts "  #{e.message}"
+            resp = ::Rack::Response.new do |res|
+              res.status = 500
+              res.write "An error occurred"
+            end
+            resp.finish
           end
-          resp.finish
         else
           env["rack.errors"].puts "Invoking file handler for #{path.inspect}"
           @file_server.call(env)
