@@ -36,6 +36,7 @@ module HtmlMockup
       server_options[:Port] = options["port"] || "9000"
       
       puts "Running #{server.inspect} on port #{server_options[:Port]}"
+      puts "  Taking partials from #{@partial_path} (#{HtmlMockup::Template.partial_files(@partial_path).size} found)"
       server.run chain.to_app, server_options
     end
     
@@ -116,7 +117,7 @@ module HtmlMockup
     
     def template_paths(path,partial_path=nil)
       path = Pathname.new(path)
-      partial_path = partial_path && Pathname.new(partial_path) || (path + "../partials/").cleanpath      
+      partial_path = partial_path && Pathname.new(partial_path) || (path + "../partials/").realpath
       [path,partial_path]
     end
     
