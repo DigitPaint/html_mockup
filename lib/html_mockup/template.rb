@@ -4,6 +4,9 @@ require 'erb'
 require 'cgi'
 
 module HtmlMockup
+  
+  class MissingPartial < StandardError; end
+  
   class Template
   
     class << self
@@ -24,7 +27,7 @@ module HtmlMockup
       end
       
       def partial_files(path)
-        filter = "*.part.?html"
+        filter = "*.part.{?h,h}tml"
         files = []
         Dir.chdir(Pathname.new(path)) do 
           files = Dir.glob(filter)        
@@ -104,8 +107,10 @@ module HtmlMockup
       [tag,params,scanned]
     end
   
-    def render_partial(tag,params)  
-      return nil unless self.available_partials[tag]
+    def render_partial(tag,params)      
+      unless self.available_partials[tag]
+        raise MissingPartial.new("Could not find partial '#{tag}' in partial path '#{@options[:partial_path]}'")
+      end
       template = ERB.new(self.available_partials[tag])
       context = TemplateContext.new(params)
       "\n" + template.result(context.get_binding).rstrip + "\n<!-- [STOP:#{tag}] -->"
