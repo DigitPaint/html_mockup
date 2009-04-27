@@ -94,10 +94,10 @@ module HtmlMockup
     
     desc "convert [directory]","Inject all partials, into all HTML files within directory"
     method_options :partial_path => :optional, # Defaults to [directory]/../partials
-                   :filter => :optional # What files should be converted defaults to *.html
+                   :filter => :optional # What files should be converted defaults to **/*.html
     def convert(path=".")
       path,partial_path = template_paths(path,options["partial_path"])
-      filter = options["filter"] || "*.html"      
+      filter = options["filter"] || "**/*.html"      
       puts "Converting #{filter} in #{path}"
       puts "  Taking partials from #{partial_path} (#{HtmlMockup::Template.partial_files(partial_path).size} found)"
       
