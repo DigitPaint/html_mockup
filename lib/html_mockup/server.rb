@@ -1,8 +1,8 @@
 require 'rack'
+require File.dirname(__FILE__) + "/template"
+require File.dirname(__FILE__) + "/w3c_validator"
 require File.dirname(__FILE__) + "/rack/html_mockup"
 require File.dirname(__FILE__) + "/rack/html_validator"      
-
-
 
 module HtmlMockup
   class Server
@@ -27,8 +27,7 @@ module HtmlMockup
     end
     
     def run
-      app = self.finalize!
-      self.handler.run app, @server_options do |server|
+      self.handler.run self.application, @server_options do |server|
         trap(:INT) do
           ## Use thins' hard #stop! if available, otherwise just #stop
           server.respond_to?(:stop!) ? server.stop! : server.stop
@@ -37,7 +36,7 @@ module HtmlMockup
       end
     end
     
-    def finalize!
+    def application
       return @app if @app
       @stack.use ::Rack::ShowExceptions
       @stack.use ::Rack::Lint
