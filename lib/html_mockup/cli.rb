@@ -78,6 +78,7 @@ module HtmlMockup
         
         mkdir(path + "script")
         cp(example_path + "script/server",path + "script/server")
+        cp(example_path + "config.ru",path + "config.ru")        
         (path + "script/server").chmod(0755)
       end
     end
