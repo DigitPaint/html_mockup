@@ -15,29 +15,19 @@ module HtmlMockup
                    :partial_path => :optional, # Defaults to [directory]/../partials
                    :validate => :boolean # Automatically validate all HTML responses @ the w3c
     def serve(path=".")
-      @path,@partial_path = template_paths(path,options["partial_path"])      
-      require 'rack'
-      require File.dirname(__FILE__) + "/rack/html_mockup"
-      require File.dirname(__FILE__) + "/rack/html_validator"      
-      chain = ::Rack::Builder.new do
-        use ::Rack::ShowExceptions
-        use ::Rack::Lint
-      end
-      chain.use Rack::HtmlValidator if options["validate"]
-      chain.run Rack::HtmlMockup.new(@path, @partial_path)
-      
-      begin
-        server = ::Rack::Handler::Mongrel
-      rescue LoadError => e
-        server = ::Rack::Handler::WEBrick
-      end
+      require File.dirname(__FILE__) + '/server'
+            
+      @path,@partial_path = template_paths(path,options["partial_path"])
       
       server_options = {}
       server_options[:Port] = options["port"] || "9000"
-      
-      puts "Running #{server.inspect} on port #{server_options[:Port]}"
+
+      server = Server.new(@path,@partial_path,options,server_options)
+          
+      puts "Running HtmlMockup with #{server.handler.inspect} on port #{server_options[:Port]}"
       puts "  Taking partials from #{@partial_path} (#{HtmlMockup::Template.partial_files(@partial_path).size} found)"
-      server.run chain.to_app, server_options
+      
+      server.run
     end
     
     desc "validate [directory/file]", "Validates the file or all HTML in directory"
