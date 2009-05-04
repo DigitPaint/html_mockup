@@ -41,7 +41,7 @@ module HtmlMockup
       @stack.use ::Rack::ShowExceptions
       @stack.use ::Rack::Lint
       
-      @middleware.each { |c,a,b| builder.use(c, *a, &b) }
+      @middleware.each { |c,a,b| @stack.use(c, *a, &b) }
       
       @stack.use Rack::HtmlValidator if self.options["validate"]
       @stack.run Rack::HtmlMockup.new(self.root, self.partial_path)
