@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require 'pathname'
 
 begin
@@ -9,12 +7,10 @@ rescue LoadError => e
   require 'html_mockup/server'
 end
 
-root_path = Pathname.new(File.dirname(__FILE__)) + "../html"
+root_path = Pathname.new(File.dirname(__FILE__)) + "html"
 partial_path = (root_path + "../partials/").realpath
 
 mockup = HtmlMockup::Server.new(root_path,partial_path)
 
-# Add some of your own middleware here.
-# mockup.use Rack::CommonLogger
+run mockup.application
 
-mockup.run
