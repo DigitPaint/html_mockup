@@ -54,7 +54,7 @@ module HtmlMockup
     
     # Sinatra's detect_rack_handler
     def detect_rack_handler
-      servers = %w[thin mongrel webrick]
+      servers = %w[mongrel thin webrick]
       servers.each do |server_name|
         begin
           return ::Rack::Handler.get(server_name.capitalize)
