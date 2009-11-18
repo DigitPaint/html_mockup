@@ -11,8 +11,8 @@ begin
     gemspec.test_files = []
     gemspec.has_rdoc = false
     
-    gemspec.add_dependency('thor', '>= 0.9.9')
-    gemspec.add_dependency('rack', '>= 0.3.0')
+    gemspec.add_dependency('thor', '~> 0.12.0')
+    gemspec.add_dependency('rack', '>= 1.0.0')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

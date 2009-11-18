@@ -23,7 +23,17 @@ module HtmlMockup
     end
     
     def handler
-      @handler ||= detect_rack_handler      
+      if self.options[:handler]
+        begin
+          @handler = ::Rack::Handler.get(self.options[:handler])
+        rescue LoadError
+        rescue NameError
+        end
+        if @handler.nil?
+          puts "Handler '#{self.options[:handler]}' not found, using fallback."
+        end        
+      end
+      @handler ||= detect_rack_handler
     end
     
     def run
@@ -57,7 +67,7 @@ module HtmlMockup
       servers = %w[mongrel thin webrick]
       servers.each do |server_name|
         begin
-          return ::Rack::Handler.get(server_name.capitalize)
+          return ::Rack::Handler.get(server_name)
         rescue LoadError
         rescue NameError
         end

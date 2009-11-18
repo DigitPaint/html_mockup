@@ -11,17 +11,18 @@ require File.dirname(__FILE__) + "/w3c_validator"
 module HtmlMockup
   class Cli < Thor
     desc "serve [directory]","Serve directory as HTML, defaults to current directory"
-    method_options :port => :optional, # Defaults to 9000
-                   :partial_path => :optional, # Defaults to [directory]/../partials
-                   :validate => :boolean # Automatically validate all HTML responses @ the w3c
+    method_options :port => :string, # Defaults to 9000
+                   :partial_path => :string, # Defaults to [directory]/../partials
+                   :validate => :boolean, # Automatically validate all HTML responses @ the w3c
+                   :handler => :string # The handler to use (defaults to mongrel)
     def serve(path=".")
       require File.dirname(__FILE__) + '/server'
-            
+      
       @path,@partial_path = template_paths(path,options["partial_path"])
       
       server_options = {}
       server_options[:Port] = options["port"] || "9000"
-
+            
       server = Server.new(@path,@partial_path,options,server_options)
           
       puts "Running HtmlMockup with #{server.handler.inspect} on port #{server_options[:Port]}"
@@ -32,7 +33,7 @@ module HtmlMockup
     
     desc "validate [directory/file]", "Validates the file or all HTML in directory"
     method_options :show_valid => :boolean, # Also print a line for each valid file
-                   :filter => :optional # What files should be found, defaults to [^_]*.html
+                   :filter => :string # What files should be found, defaults to [^_]*.html
     def validate(path=".")
       filter = options["filter"] || "[^_]*.html"
       
@@ -84,8 +85,8 @@ module HtmlMockup
     end
     
     desc "convert [directory]","Inject all partials, into all HTML files within directory"
-    method_options :partial_path => :optional, # Defaults to [directory]/../partials
-                   :filter => :optional # What files should be converted defaults to **/*.html
+    method_options :partial_path => :string, # Defaults to [directory]/../partials
+                   :filter => :string # What files should be converted defaults to **/*.html
     def convert(path=".")
       path,partial_path = template_paths(path,options["partial_path"])
       filter = options["filter"] || "**/*.html"      
@@ -104,8 +105,8 @@ module HtmlMockup
     end
     
     desc "extract [source_path] [target_path]", "Extract a fully relative html mockup into target_path. It will expand all absolute href's, src's and action's into relative links if they are absolute"
-    method_options :partial_path => :optional, # Defaults to [directory]/../partials
-                   :filter => :optional # What files should be converted defaults to **/*.html
+    method_options :partial_path => :string, # Defaults to [directory]/../partials
+                   :filter => :string # What files should be converted defaults to **/*.html
     def extract(source_path=".",target_path="../out")
       require 'hpricot'
       source_path,target_path = Pathname.new(source_path),Pathname.new(target_path)
