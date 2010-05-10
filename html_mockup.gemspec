@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{html_mockup}
-  s.version = "0.3.2"
+  s.version = "0.3.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Flurin Egger"]
-  s.date = %q{2009-11-18}
+  s.date = %q{2010-05-10}
   s.default_executable = %q{mockup}
   s.email = %q{flurin@digitpaint.nl}
   s.executables = ["mockup"]
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
      "lib/html_mockup/template.rb",
      "lib/html_mockup/w3c_validator.rb"
   ]
+  s.has_rdoc = false
   s.homepage = %q{http://github.com/flurin/html_mockup}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
