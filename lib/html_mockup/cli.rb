@@ -130,7 +130,7 @@ module HtmlMockup
             (doc/"*[@#{attribute}]").each do |tag|
               next unless tag[attribute] =~ /\A\//
               if true_file = resolve_path(cur_dir + up_to_root + tag[attribute].sub(/\A\//,""))
-                tag[attribute] = true_file.relative_path_from(cur_dir)
+                tag[attribute] = true_file.relative_path_from(cur_dir).to_s
               else
                 puts "Could not resolve link #{tag[attribute]} in #{file_name}"
               end
