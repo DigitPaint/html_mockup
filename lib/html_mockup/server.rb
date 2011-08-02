@@ -50,7 +50,8 @@ module HtmlMockup
       return @app if @app
       @stack.use ::Rack::ShowExceptions
       @stack.use ::Rack::Lint
-      @stack.use ::Rack::ConditionalGet      
+      @stack.use ::Rack::ConditionalGet
+      @stack.use ::Rack::Head 
       
       @middleware.each { |c,a,b| @stack.use(c, *a, &b) }
       
