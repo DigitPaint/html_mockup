@@ -7,6 +7,8 @@ module HtmlMockup
   class W3CValidator
   
     ValidationUri = "http://validator.w3.org/check"
+    
+    class RequestError < StandardError; end
   
     attr_reader :valid,:response,:errors,:warnings,:status
   
@@ -66,17 +68,24 @@ module HtmlMockup
       out << "Content-Type: #{mime_type}"
       out.join("\r\n") + "\r\n\r\n" + content + "\r\n"
     end
-  
-  
-  
-  
+    
     # Makes request to remote service.
     def request(method, path, *arguments)
+      perform_request(method, path, arguments, 3)
+    end
+    
+    def perform_request(method, path, arguments, tries=3)
       result = nil
       result = http.send(method, path, *arguments)
       handle_response(result)
+    rescue RequestError => e
+      if tries > 0
+        perform_request(method, path, arguments, tries-1)
+      else
+        raise
+      end
     rescue Timeout::Error => e
-      raise 
+      raise       
     end
   
     # Handles response and error codes from remote service.
@@ -97,13 +106,13 @@ module HtmlMockup
         when 405
           raise "Method not allowed"
         when 409
-          raise "Rescource conflict"
+          raise RequestError.new("Rescource conflict")
         when 422
-          raise "Resource invalid"
+          raise RequestError.new("Resource invalid")
         when 401...500
           raise "Client error"
         when 500...600
-          raise "Server error"
+          raise RequestError.new("Server error")
         else
           raise "Unknown response: #{response.code.to_i}"
       end
