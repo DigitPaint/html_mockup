@@ -9,10 +9,10 @@ HtmlMockup also provides tools for HTML validation.
 === Requirements
 HtmlMockup requires the following dependencies
 
-* Ruby 1.8.x (not tested in 1.9.x)
+* Ruby 1.8.x (or 1.9.x)
 * Rubygems
 * Thor (to use mockup binary)
-* Rack > 0.3 (to use mockup serve) 
+* Rack > 1.0 (to use mockup serve) 
 
 === Usage
 
@@ -78,4 +78,4 @@ Options:
 --filter:: What files should be validated, defaults to [^_]*.html
 
 === Copyright & license
-Copyright (c) 2009 Flurin Egger, DigitPaint, MIT Style License. (see MIT-LICENSE)
+Copyright (c) 2011 Flurin Egger, DigitPaint, MIT Style License. (see MIT-LICENSE)
