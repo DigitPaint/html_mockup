@@ -27,7 +27,7 @@ module HtmlMockup
       end
       
       def partial_files(path)
-        filter = "*.part.{?h,h}tml"
+        filter = "**/*.part.{?h,h}tml"
         files = []
         Dir.chdir(Pathname.new(path)) do 
           files = Dir.glob(filter)        
@@ -92,7 +92,7 @@ module HtmlMockup
       begin_of_tag = self.scanner.scan_until(/<!-- \[START:/)
       return nil unless begin_of_tag
       scanned << begin_of_tag
-      scanned << tag = self.scanner.scan(/[a-z0-9_]+/)
+      scanned << tag = self.scanner.scan(/[a-z0-9_\/\-]+/)
       if scanned_questionmark = self.scanner.scan(/\?/)
         scanned << scanned_questionmark
         scanned << raw_params = self.scanner.scan_until(/\] -->/)
