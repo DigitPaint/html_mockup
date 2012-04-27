@@ -58,10 +58,13 @@ module HtmlMockup
   
     # Renders the template and returns it as a string
     #
+    # ==== Parameters
+    # env<Hash>:: An environment hash (mostly used in combination with Rack)
+    #
     # ==== Returns
     # String:: The rendered template
     #--
-    def render
+    def render(env={})
       out = ""
     	while (partial = self.parse_partial_tag!) do
     	  tag,params,scanned = partial
@@ -70,7 +73,7 @@ module HtmlMockup
 
     		# scan until end of tag
     		current_content = self.scanner.scan_until(/<!-- \[STOP:#{tag}\] -->/)
-    		out << (render_partial(tag,params) || current_content)
+    		out << (render_partial(tag, params) || current_content)
     	end
     	out << scanner.rest    
     end
@@ -107,21 +110,28 @@ module HtmlMockup
       [tag,params,scanned]
     end
   
-    def render_partial(tag,params)      
+    # Actually renders the tag as ERB
+    def render_partial(tag, params, env = {})
       unless self.available_partials[tag]
         raise MissingPartial.new("Could not find partial '#{tag}' in partial path '#{@options[:partial_path]}'")
       end
       template = ERB.new(self.available_partials[tag])
-      context = TemplateContext.new(params)
+      context = TemplateContext.new(params, env)
       "\n" + template.result(context.get_binding).rstrip + "\n<!-- [STOP:#{tag}] -->"
     end
   
     class TemplateContext
-      def initialize(params)
+      # Params will be set as instance variables
+      def initialize(params, env = {})
         params.each do |k,v|
           self.instance_variable_set("@#{k}",v)
         end
+        
+        @_env = env;
       end
+      
+      def env; @_env; end
+      
       def get_binding; binding(); end
     end
   
