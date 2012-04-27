@@ -39,6 +39,11 @@ through standard instance methods. The example below would create the instance v
 
   <!-- [START:partial_name?key=value] -->Text<!-- [STOP:partial_name] -->
 
+=== Partials in subdirectories
+
+The partials path can have it's own directory structure. You can create tags with slashes in them
+to access partials in subdirectories.
+
 
 === Mockup commandline
 
