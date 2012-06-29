@@ -3,8 +3,8 @@ require 'pathname'
 module HtmlMockup
   class Release::Scm::Git < Release::Scm
     
-    # @options config :ref Ref to use for current tag
-    # @options config :path Path to working dir
+    # @option config [String] :ref Ref to use for current tag
+    # @option config [String, Pathname] :path Path to working dir
     def initialize(config={})
       super(config)
       @config[:ref] ||= "HEAD"
@@ -24,7 +24,7 @@ module HtmlMockup
       get_scm_data if @_date.nil?
       @_date
     end
-    
+  
     def previous
       self.class.new(@config.dup.update(:ref => get_previous_tag_name))
     end
