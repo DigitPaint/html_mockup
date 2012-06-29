@@ -61,5 +61,6 @@ mockup.release(config) do |release|
   # Move to release / zip
   release.finalize :zip
   release.finalize :dir
+  release.finalize lambda{|build_path|  }
   
 end
