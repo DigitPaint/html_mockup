@@ -1,7 +1,7 @@
 require 'pathname'
 
-module HtmlMockup
-  class Release::Scm::Git < Release::Scm
+module HtmlMockup::Release::Scm
+  class Git < Base
     
     # @option config [String] :ref Ref to use for current tag
     # @option config [String, Pathname] :path Path to working dir

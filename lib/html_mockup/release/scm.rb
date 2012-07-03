@@ -1,5 +1,5 @@
-module HtmlMockup
-  class Release::Scm
+module HtmlMockup::Release::Scm
+  class Base
     
     attr_reader :config
     
