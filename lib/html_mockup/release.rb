@@ -63,9 +63,9 @@ module HtmlMockup
     def scm(force = false)
       return @_scm if @_scm && !force
       
-      case options[:scm]
+      case self.config[:scm]
       when :git
-        @_scm = Release::Scm::Git.new(self.config)
+        @_scm = Release::Scm::Git.new(:path => self.source_path)
       else
         raise "Unknown SCM #{options[:scm].inspect}"
       end
