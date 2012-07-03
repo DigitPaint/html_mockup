@@ -22,6 +22,7 @@ module HtmlMockup
     def initialize(config = {})
       defaults = {
         :scm => :git,
+        :source_path  => Pathname.new(Dir.pwd) + "html",
         :target_path => Pathname.new(Dir.pwd) + "releases",
         :build_path => Pathname.new(Dir.pwd) + "build",
         :cleanup_build => true
@@ -35,15 +36,27 @@ module HtmlMockup
     end
     
     # Accessor for target_path
+    # The target_path is the path where the finalizers will put the release
+    #
     # @return Pathname the target_path
     def target_path
       Pathname.new(self.config[:target_path])
     end
     
     # Accessor for build_path
+    # The build_path is a temporary directory where the release will be built
+    #
     # @return Pathname the build_path    
     def build_path
       Pathname.new(self.config[:build_path])      
+    end
+    
+    # Accessor for source_path
+    # The source path is the root of the mockup
+    #
+    # @return Pathanem the source_path
+    def source_path
+      Pathname.new(self.config[:source_path])
     end
     
     # Get the current SCM object
