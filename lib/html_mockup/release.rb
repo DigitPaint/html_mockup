@@ -108,13 +108,18 @@ module HtmlMockup
     #
     # =======================
     # = Version : v1.0.0    =
-    # =  Date : 2012-06-20  =
+    # = Date : 2012-06-20   =
     # =======================
     #
-    def banner(&block)
+    #
+    # @option options [:css,:js,:html,false] :comment Wether or not to comment the output and in what style. (default=js)
+    def banner(options = {}, &block)
+      options = {
+        :comment => :js
+      }.update(options)
+      
       if block_given?
         @_banner = yield.to_s
-        @_banner = @_banner.split("\r?\n").map{|b| "/* #{b} */"}.join("\n")
       elsif !@_banner
         banner = []
         banner << "Version : #{self.scm.version}"
@@ -125,7 +130,11 @@ module HtmlMockup
         div = "=" * banner.first.size
         banner.unshift(div)
         banner << div
-        @_banner = banner.join("\n").map{|b| "/* #{b} */"}.join("\n")      
+        @_banner = banner.join("\n")
+      end
+      
+      if options[:comment]
+        self.comment(@_banner, :style => options[:comment])
       else
         @_banner
       end
@@ -171,6 +180,7 @@ module HtmlMockup
       # Make sure the build_path is empty
       
       # Make sure the target_path exists
+      
     end
     
     def run_stack!
