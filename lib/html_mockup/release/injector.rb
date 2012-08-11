@@ -30,6 +30,8 @@ module HtmlMockup
     # Currently supported/tested processors are:
     #
     # * 'md' for Markdown (bluecloth)
+    #
+    # Injection files are relative to the :source_path
     # 
     # @param [Hash] variables Variables to inject. See example for more info
     # @option options [Array] :into An array of file globs relative to the build_path
@@ -73,7 +75,7 @@ module HtmlMockup
     def get_complex_injection(injection, release)
       
       if injection[:file]
-        content = File.read(release.build_path + injection[:file])
+        content = File.read(release.source_path + injection[:file])
       else
         content = injection[:content]
       end
