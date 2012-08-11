@@ -76,8 +76,8 @@ module HtmlMockup
     # @examples
     #   release.inject({"VERSION" => release.version, "DATE" => release.date}, :into => %w{_doc/toc.html})
     #   release.inject({"CHANGELOG" => {:file => "", :filter => BlueCloth}}, :into => %w{_doc/changelog.html})  
-    def inject(injection)
-      @injections << injection
+    def inject(variables, options)
+      @injections << [variables, options]
     end
     
     # Use a certain pre-processor
@@ -185,7 +185,7 @@ module HtmlMockup
     
     def run_injections!
       @injections.each do |injection|
-        Injector.new(injection).call
+        Injector.new(injection[0], injection[1]).call(self)
       end
     end
     

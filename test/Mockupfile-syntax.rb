@@ -52,10 +52,10 @@ mockup.release(config) do |release|
   release.inject({"VERSION" => release.version, "DATE" => release.date}, :into => %w{_doc/toc.html})
   
   # Inject CHANGELOG
-  release.inject({"CHANGELOG" => {:file => "", :filter => BlueCloth}}, :into => %w{_doc/changelog.html})  
+  release.inject({"CHANGELOG" => {:file => "", :processor => "md"}}, :into => %w{_doc/changelog.html})  
   
   # Inject NOTES
-  release.inject({"NOTES" => {:file => "", :filter => BlueCloth}}, :into => %w{_doc/notes.html})  
+  release.inject({"NOTES" => {:file => "", :processor => "md"}}, :into => %w{_doc/notes.html})  
   
   
   # Move to release / zip
