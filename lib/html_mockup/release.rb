@@ -170,6 +170,17 @@ module HtmlMockup
       puts part.to_s + " : " + msg.to_s
     end
     
+    # @param [Array] globs an array of file path globs that will be globbed against the build_path
+    # @param [Array] excludes an array of regexps that will be excluded from the result
+    def get_files(globs, excludes = [])
+      files = globs.map{|g| Dir.glob(self.build_path + g) }.flatten
+      if excludes.any?
+        files.reject{|c| excludes.detect{|e| e.match(c) } }
+      else
+        files
+      end
+    end
+    
     protected
     
     # ==============
