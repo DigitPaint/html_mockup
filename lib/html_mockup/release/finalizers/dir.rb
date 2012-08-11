@@ -12,6 +12,12 @@ module HtmlMockup::Release::Finalizers
       name = [(options[:prefix] || "html"), release.scm.version].join("-")
       
       release.log(self, "Finalizing release to #{release.target_path + name}")
+      
+      if File.exist?(release.target_path + name)
+        release.log(self, "Removing existing target #{release.target_path + name}")
+        FileUtils.rm_rf(release.target_path + name)
+      end
+      
       FileUtils.cp_r release.build_path, release.target_path + name
     end
   end
