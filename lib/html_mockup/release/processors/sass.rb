@@ -20,8 +20,8 @@ module HtmlMockup::Release::Processors
       # Sassify SCSS files
       files = release.get_files(match)
       files.each do |f|
-        puts "processing: #{f}"
         if !skip.detect{|r| r.match(f) }
+          release.log(self, "Processing: #{f}")          
           # Compile SCSS
           ::Sass.compile_file(f, f.gsub(/\.scss$/, ".css"), options)
         end        
