@@ -227,9 +227,35 @@ module HtmlMockup
       
     end
     
+    # @param [String] string The string to comment
+    #
+    # @option options [:html, :css, :js] :style The comment style to use (default=:js, which is the same as :css)
+    # @option options [Boolean] :per_line Comment per line or make one block? (default=true)
+    def comment(string, options = {})
+      options = {
+        :style => :css,
+        :per_line => true
+      }.update(options)
+      
+      commenters = {
+        :html => Proc.new{|s| "<!-- #{s} -->" },
+        :css => Proc.new{|s| "/* #{s} */" },
+        :js => Proc.new{|s| "/* #{s} */" }                
+      }
+      
+      commenter = commenters[options[:style]] || commenters[:js]
+      
+      if options[:per_line]
+        string = string.split(/\r?\n/)
+        string.map{|s| commenter.call(s) }.join("\n")
+      else
+        commenter.call(s)
+      end
+    end
   end
 end
 
 require File.dirname(__FILE__) + "/release/scm"
+require File.dirname(__FILE__) + "/release/injector"
 require File.dirname(__FILE__) + "/release/finalizers"
 require File.dirname(__FILE__) + "/release/processors"
