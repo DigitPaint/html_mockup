@@ -10,10 +10,12 @@ module HtmlMockup::Release::Processors
     # 
     # (80 dashes)
     #
+    # @options options [Array] match Files to match, default to ["**/*.{css,js}"]
     # @options options [Regexp] :delimiter An array of header delimiters. Defaults to the one above. The delimiter will be removed from the output.
     # @options options [Array[Regexp]] :skip An array of file regular expressions to specifiy which files to skip. Defaults to [/javascripts\/vendor\/.\*.js\Z/, /_doc\/.*/]
     def call(release, options={})
       options = {
+        :match => ["**/*.{css,js}"],
         :skip =>  [/javascripts\/vendor\/.*\.js\Z/, /_doc\/.*/],
         :delimiter => Regexp.escape("/* -------------------------------------------------------------------------------- */")
       }.update(options)
@@ -23,12 +25,9 @@ module HtmlMockup::Release::Processors
       js_compressor = YUI::JavaScriptCompressor.new(compressor_options)
       
       # Add version numbers and minify the files
-      Dir.glob(release.build_path + "**/*").grep(/\.(css|js)$/).each do |f|
+      release.get_files(options[:match], options[:skip]).each do |f|
         type = f[/\.(.+)$/,1]  
-  
-        # Skip stuff in options[:skip]
-        next if options[:skip].detect{|regex| regex.match(f) }
-    
+      
         data = File.read(f);
         File.open(f,"w") do |fh| 
           

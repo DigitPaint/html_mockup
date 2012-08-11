@@ -33,14 +33,13 @@ module HtmlMockup
     # 
     # @param [Hash] variables Variables to inject. See example for more info
     # @option options [Array] :into An array of file globs relative to the build_path
-    def initialize(variables, options)
-      
+    def initialize(variables, options)      
       @variables = variables
       @into = options[:into]
     end
     
     def call(release)
-      files = @into.map{|p| Dir.glob(release.build_path + p) }.flatten
+      files = release.get_files(@into)
       
       files.each do |f|
         c = File.read(f)
