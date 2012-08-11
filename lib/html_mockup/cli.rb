@@ -128,9 +128,30 @@ module HtmlMockup
           doc = Hpricot(source)
           %w{src href action}.each do |attribute|
             (doc/"*[@#{attribute}]").each do |tag|
-              next unless tag[attribute] =~ /\A\//
-              if true_file = resolve_path(cur_dir + up_to_root + tag[attribute].sub(/\A\//,""))
-                tag[attribute] = true_file.relative_path_from(cur_dir).to_s
+              url = tag[attribute]
+              
+              # Skip if the url doesn't start with a / (but not with //)
+              next unless url =~ /\A\/[^\/]/
+              
+              # Strip off anchors
+              anchor = nil
+              url.gsub!(/(#.+)\Z/) do |r|
+                anchor = r
+                ""
+              end
+              
+              # Strip of query strings
+              query = nil
+              url.gsub!(/(\?.+)\Z/) do |r|
+                query = r
+                ""
+              end
+              
+              if true_file = resolve_path(cur_dir + up_to_root + url.sub(/\A\//,""))
+                url = true_file.relative_path_from(cur_dir).to_s
+                url += query if query
+                url += anchor if anchor
+                tag[attribute] = url
               else
                 puts "Could not resolve link #{tag[attribute]} in #{file_name}"
               end
