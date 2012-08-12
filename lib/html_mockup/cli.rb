@@ -36,6 +36,11 @@ module HtmlMockup
       server.run!
     end
     
+    desc "release [directory]", "Create a release for the project"
+    def release(path=".")
+      # TODO: implement
+    end
+    
     desc "validate [directory/file]", "Validates the file or all HTML in directory"
     method_options :show_valid => :boolean, # Also print a line for each valid file
                    :filter => :string # What files should be found, defaults to [^_]*.html
