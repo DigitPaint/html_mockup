@@ -6,17 +6,28 @@ require File.dirname(__FILE__) + "/rack/html_validator"
 
 module HtmlMockup
   class Server
-    attr_accessor :options,:server_options, :root, :partial_path
     
-    def initialize(root,partial_path,options={},server_options={})
+    attr_reader :options
+    
+    attr_accessor :html_path, :partial_path
+    
+    attr_accessor :port, :handler
+    
+    def initialize(html_path, partial_path, options={})
       @stack = ::Rack::Builder.new 
 
       @middleware = []
-      @root = root
+      @html_path = html_path
       @partial_path = partial_path
-      @options,@server_options = options,server_options
+      @options = {
+        :handler => nil, # Autodetect
+        :port => 9000
+      }.update(options)
+      
+      @port = @options[:port]
+      @handler = @options[:handler]
     end
-    
+        
     # Use the specified Rack middleware
     def use(middleware, *args, &block)
       @middleware << [middleware, args, block]
@@ -25,7 +36,7 @@ module HtmlMockup
     def handler
       if self.options[:handler]
         begin
-          @handler = ::Rack::Handler.get(self.options[:handler])
+          @handler = ::Rack::Handler.get(self.handler)
         rescue LoadError
         rescue NameError
         end
@@ -35,9 +46,9 @@ module HtmlMockup
       end
       @handler ||= detect_rack_handler
     end
-    
-    def run
-      self.handler.run self.application, @server_options do |server|
+        
+    def run!
+      self.handler.run self.application, self.server_options do |server|
         trap(:INT) do
           ## Use thins' hard #stop! if available, otherwise just #stop
           server.respond_to?(:stop!) ? server.stop! : server.stop
@@ -45,6 +56,7 @@ module HtmlMockup
         end
       end
     end
+    alias :run :run!
     
     def application
       return @app if @app
@@ -56,13 +68,21 @@ module HtmlMockup
       @middleware.each { |c,a,b| @stack.use(c, *a, &b) }
       
       @stack.use Rack::HtmlValidator if self.options["validate"]
-      @stack.run Rack::HtmlMockup.new(self.root, self.partial_path)
+      @stack.run Rack::HtmlMockup.new(self.html_path, self.partial_path)
       
       @app = @stack.to_app
     end
 
     
     protected
+    
+    # Generate server options for handler
+    def server_options
+      {
+        :Port => self.port
+      }
+    end
+    
     
     # Sinatra's detect_rack_handler
     def detect_rack_handler

@@ -6,29 +6,34 @@ require 'fileutils'
 include FileUtils
 
 require File.dirname(__FILE__) + "/template"
+require File.dirname(__FILE__) + "/project"
 require File.dirname(__FILE__) + "/w3c_validator"
 
 module HtmlMockup
   class Cli < Thor
     desc "serve [directory]","Serve directory as HTML, defaults to current directory"
     method_options :port => :string, # Defaults to 9000
-                   :partial_path => :string, # Defaults to [directory]/../partials
-                   :validate => :boolean, # Automatically validate all HTML responses @ the w3c
+                   :html_path => :string, # The document root, defaults to "[directory]/html"
+                   :partial_path => :string, # Defaults to [directory]/partials
                    :handler => :string # The handler to use (defaults to mongrel)
     def serve(path=".")
       require File.dirname(__FILE__) + '/server'
       
-      @path,@partial_path = template_paths(path,options["partial_path"])
+      # TODO: Deprecation warning for people used to older versions that had path relative to the HTML directory
       
-      server_options = {}
-      server_options[:Port] = options["port"] || "9000"
-            
-      server = Server.new(@path,@partial_path,options,server_options)
-          
-      puts "Running HtmlMockup with #{server.handler.inspect} on port #{server_options[:Port]}"
-      puts "  Taking partials from #{@partial_path} (#{HtmlMockup::Template.partial_files(@partial_path).size} found)"
+      # Load the project, it should take care of all the paths
+      @project = Project.new(path)
       
-      server.run
+      # Override any Mockupfile settings with commandline options
+      # TODO: Override any Mockupfile settings with commandline options
+      
+      server = @project.server
+      
+      puts "Running HtmlMockup with #{server.handler.inspect} on port #{server.port}"
+      puts "  Serving: \"#{server.html_path}\""
+      puts "  Partials: \"#{server.partial_path}\" (#{HtmlMockup::Template.partial_files(server.partial_path).size} found)"
+      
+      server.run!
     end
     
     desc "validate [directory/file]", "Validates the file or all HTML in directory"
@@ -164,8 +169,9 @@ module HtmlMockup
     end
     
     protected
-    
-    def template_paths(path,partial_path=nil)
+
+    # TODO: remove this in favour of the project path
+    def template_paths(path, partial_path=nil)
       path = Pathname.new(path)
       partial_path = partial_path && Pathname.new(partial_path) || (path + "../partials/").realpath
       [path,partial_path]
