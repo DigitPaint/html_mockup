@@ -141,7 +141,7 @@ module HtmlMockup
     end
     
     # Actually perform the release
-    def release!
+    def run!
       # Validate paths
       validate_paths!
       
