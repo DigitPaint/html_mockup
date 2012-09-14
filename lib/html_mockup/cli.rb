@@ -118,59 +118,7 @@ module HtmlMockup
     method_options :partial_path => :string, # Defaults to [directory]/../partials
                    :filter => :string # What files should be converted defaults to **/*.html
     def extract(source_path=".",target_path="../out")
-      require 'hpricot'
-      source_path,target_path = Pathname.new(source_path),Pathname.new(target_path)
-      source_path,partial_path = template_paths(source_path,options["partial_path"])
-      filter = options["filter"] || "**/*.html"
-      raise "Target #{target_path} already exists, please choose a new directory to extract into" if target_path.exist?
-      
-      mkdir_p(target_path)
-      target_path = target_path.realpath
-      
-      # Copy source to target first, we'll overwrite the templates later on.
-      cp_r(source_path.children,target_path)
-      
-      Dir.chdir(source_path) do
-        Dir.glob(filter).each do |file_name|
-          source = HtmlMockup::Template.open(file_name, :partial_path => partial_path).render
-          cur_dir = Pathname.new(file_name).dirname
-          up_to_root = File.join([".."] * (file_name.split("/").size - 1))
-          doc = Hpricot(source)
-          %w{src href action}.each do |attribute|
-            (doc/"*[@#{attribute}]").each do |tag|
-              url = tag[attribute]
-              
-              # Skip if the url doesn't start with a / (but not with //)
-              next unless url =~ /\A\/[^\/]/
-              
-              # Strip off anchors
-              anchor = nil
-              url.gsub!(/(#.+)\Z/) do |r|
-                anchor = r
-                ""
-              end
-              
-              # Strip of query strings
-              query = nil
-              url.gsub!(/(\?.+)\Z/) do |r|
-                query = r
-                ""
-              end
-              
-              if true_file = resolve_path(cur_dir + up_to_root + url.sub(/\A\//,""))
-                url = true_file.relative_path_from(cur_dir).to_s
-                url += query if query
-                url += anchor if anchor
-                tag[attribute] = url
-              else
-                puts "Could not resolve link #{tag[attribute]} in #{file_name}"
-              end
-            end
-          end
-
-          File.open(target_path + file_name,"w"){|f| f.write(doc.to_original_html) }
-        end
-      end      
+   
     end
     
     protected
@@ -192,19 +140,6 @@ module HtmlMockup
       validator.valid
     end
     
-    def resolve_path(path)
-      path = Pathname.new(path) unless path.kind_of?(Pathname)
-      # Append index.html/index.htm/index.rhtml if it's a diretory
-      if path.directory?
-        search_files = %w{.html .htm}.map!{|p| path + "index#{p}" }
-      # If it ends with a slash or does not contain a . and it's not a directory
-      # try to add .html/.htm/.rhtml to see if that exists.
-      elsif (path.to_s =~ /\/$/) || (path.to_s =~ /^[^.]+$/)
-        search_files = [path.to_s + ".html", path.to_s + ".htm"].map!{|p| Pathname.new(p) }
-      else
-        search_files = [path]
-      end
-      search_files.find{|p| p.exist? }  
-    end    
+ 
   end
 end
