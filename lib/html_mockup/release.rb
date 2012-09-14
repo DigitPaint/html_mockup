@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + "/cli"
 module HtmlMockup
   class Release
     
-    attr_reader :config
+    attr_reader :config, :project
     
     attr_reader :finalizers, :injections, :stack
     
@@ -19,7 +19,7 @@ module HtmlMockup
     # @option config [String, Pathname] :target_path The path/directory to put the release into
     # @option config [String, Pathname]:build_path Temporary path used to build the release
     # @option config [Boolean] :cleanup_build Wether or not to remove the build_path after we're done (default = true)
-    def initialize(config = {})
+    def initialize(project, config = {})
       defaults = {
         :scm => :git,
         :source_path  => Pathname.new(Dir.pwd) + "html",

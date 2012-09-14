@@ -30,9 +30,9 @@ module HtmlMockup
     end
     
     def release
-      @release ||= Release.new
+      @release ||= Release.new(self)
     end
-    
+        
     protected
     
     def mockup_paths(html_path, partial_path = nil)
