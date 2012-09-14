@@ -29,7 +29,7 @@ module HtmlMockup
       }
       
       @config = {}.update(defaults).update(config)
-      
+      @project = project
       @finalizers = []
       @injections = []
       @stack = []
@@ -146,8 +146,9 @@ module HtmlMockup
       validate_paths!
       
       # Extract valid mockup
-      cli = HtmlMockup::Cli.new
-      cli.invoke(:extract, [self.source_path, self.build_path])
+      extract!
+      # cli = HtmlMockup::Cli.new
+      # cli.invoke(:extract, [self.source_path, self.build_path])
       
       # Run stack
       run_stack!
@@ -192,6 +193,11 @@ module HtmlMockup
       
       # Make sure the target_path exists
       
+    end
+    
+    def extract!
+      extractor = Extractor.new(self.project, self.build_path)
+      extractor.run!
     end
     
     def run_stack!
@@ -276,6 +282,7 @@ module HtmlMockup
   end
 end
 
+require File.dirname(__FILE__) + "/extractor"
 require File.dirname(__FILE__) + "/release/scm"
 require File.dirname(__FILE__) + "/release/injector"
 require File.dirname(__FILE__) + "/release/finalizers"
