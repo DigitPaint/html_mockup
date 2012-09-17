@@ -22,7 +22,7 @@ module HtmlMockup
       # TODO: Deprecation warning for people used to older versions that had path relative to the HTML directory
       
       # Load the project, it should take care of all the paths
-      @project = Project.new(path)
+      @project = initialize_project(path, options)
       
       # Override any Mockupfile settings with commandline options
       # TODO: Override any Mockupfile settings with commandline options
@@ -125,6 +125,11 @@ module HtmlMockup
     def banner(project)
       puts "  Html: \"#{project.html_path}\""
       puts "  Partials: \"#{project.partial_path}\" (#{HtmlMockup::Template.partial_files(project.partial_path).size} found)"      
+    end
+    
+    # TODO: handle options
+    def initialize_project(path, options={})
+      Project.new(path)
     end
 
     # TODO: remove this in favour of the project path
