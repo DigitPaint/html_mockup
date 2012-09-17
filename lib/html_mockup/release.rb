@@ -251,7 +251,7 @@ module HtmlMockup
       if callable.respond_to?(:call)
         callable
       else
-        raise ArgumentError, "Callable must be an object that responds to #call or a symbol that resolve to such an object or a class with a #call instance method."
+        raise ArgumentError, "Could not resolve #{callable.inspect}. Callable must be an object that responds to #call or a symbol that resolve to such an object or a class with a #call instance method."
       end
       
     end
