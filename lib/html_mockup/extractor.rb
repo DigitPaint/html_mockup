@@ -16,7 +16,7 @@ module HtmlMockup
       
       
       filter = "**/*.html"
-      raise "Target #{target_path} already exists, please choose a new directory to extract into" if target_path.exist?
+      raise ArgumentError, "Target #{target_path} already exists, please choose a new directory to extract into" if target_path.exist?
       
       mkdir_p(target_path)
       target_path = target_path.realpath
