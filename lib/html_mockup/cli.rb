@@ -117,11 +117,11 @@ module HtmlMockup
     method_options :partial_path => :string, # Defaults to [directory]/partials
                    :filter => :string # What files should be converted defaults to **/*.html
     def extract(source_path=".", target_path="../out")
-      p = initialize_project(source_path)
-      e = HtmlMockup::Extractor.new(p, target_path)
+      project = initialize_project(source_path)
+      extractor = HtmlMockup::Extractor.new(project, target_path)
       puts "Extracting mockup"
-      puts banner(p)
-      e.run!
+      puts banner(project)
+      extractor.run!
     end
     
     protected
