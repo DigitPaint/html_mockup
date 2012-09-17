@@ -224,6 +224,8 @@ module HtmlMockup
     end
     
     def cleanup!
+      log(self, "Cleaning up build path #{self.build_path}")
+      rm_rf(self.build_path)
     end
     
     # Makes callable into a object that responds to call. 
