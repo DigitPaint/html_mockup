@@ -116,13 +116,6 @@ module HtmlMockup
       Project.new(path)
     end
 
-    # TODO: remove this in favour of the project path
-    def template_paths(path, partial_path=nil)
-      path = Pathname.new(path)
-      partial_path = partial_path && Pathname.new(partial_path) || (path + "../partials/").realpath
-      [path,partial_path]
-    end
-    
     def w3cvalidate(file)
       validator = W3CValidator.new(File.read(file))
       validator.validate!  
