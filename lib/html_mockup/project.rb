@@ -20,7 +20,7 @@ module HtmlMockup
         :partial_path => @path + "partials"
       }.update(options)
       
-      @html_path, @partial_path = mockup_paths(options[:html_path], options[:partial_path])
+      html_path, partial_path = mockup_paths(options[:html_path], options[:partial_path])
       @mockupfile = Mockupfile.new(self)
       @mockupfile.load
     end
@@ -32,12 +32,20 @@ module HtmlMockup
     def release
       @release ||= Release.new(self)
     end
+    
+    def html_path=(p)
+      @html_path = Pathname.new(p).realpath
+    end
+    
+    def partial_path=(p)
+      @partial_path = Pathname.new(p).realpath
+    end
         
     protected
     
     def mockup_paths(html_path, partial_path = nil)
       html_path = Pathname.new(html_path)
-      partial_path = partial_path && Pathname.new(partial_path) || (html_path + "../partials/").realpath
+      partial_path = partial_path && Pathname.new(partial_path) || (html_path + "../partials/")
       [html_path, partial_path]
     end
 
