@@ -16,9 +16,7 @@ module HtmlMockup
                    :html_path => :string, # The document root, defaults to "[directory]/html"
                    :partial_path => :string, # Defaults to [directory]/partials
                    :handler => :string # The handler to use (defaults to mongrel)
-    def serve(path=".")
-      require File.dirname(__FILE__) + '/server'
-      
+    def serve(path=".")      
       # TODO: Deprecation warning for people used to older versions that had path relative to the HTML directory
       
       # Load the project, it should take care of all the paths
@@ -34,7 +32,8 @@ module HtmlMockup
     
     desc "release [directory]", "Create a release for the project"
     def release(path=".")
-      # TODO: implement
+      project = initialize_project(path, options)
+      project.release.run!
     end
     
     desc "validate [directory/file]", "Validates the file or all HTML in directory"
