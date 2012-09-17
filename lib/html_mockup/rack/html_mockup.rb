@@ -14,16 +14,18 @@ module HtmlMockup
       def call(env)
         path = env["PATH_INFO"]
         
-        # Append index.html/index.htm/index.rhtml if it's a diretory
+        # TODO: Combine with Extractor#resolve_path
+        
+        # Append index.html/index.htm if it's a diretory
         if File.directory?(File.join(@docroot,path))
-          search_files = %w{.html .htm .rhtml}.map!{|p| File.join(@docroot,path,"index#{p}")}
-        # If it's already a .html/.htm/.rhtml file, render that file
-        elsif (path =~ /\.r?html?$/)
+          search_files = %w{.html .htm}.map!{|p| File.join(@docroot,path,"index#{p}")}
+        # If it's already a .html/.htm file, render that file
+        elsif (path =~ /\.html?$/)
           search_files = [File.join(@docroot,path)]
         # If it ends with a slash or does not contain a . and it's not a directory
-        # try to add .html/.htm/.rhtml to see if that exists.
+        # try to add .html/.htm to see if that exists.
         elsif (path =~ /\/$/) || (path =~ /^[^.]+$/)
-          search_files = [path + ".html", path + ".htm", path + ".rhtml"].map!{|p| File.join(@docroot,p) }
+          search_files = [path + ".html", path + ".htm"].map!{|p| File.join(@docroot,p) }
         # Otherwise don't render anything at all.
         else
           search_files = []

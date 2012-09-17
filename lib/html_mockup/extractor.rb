@@ -87,7 +87,7 @@ module HtmlMockup
       if path.directory?
         search_files = %w{.html .htm}.map!{|p| path + "index#{p}" }
       # If it ends with a slash or does not contain a . and it's not a directory
-      # try to add .html/.htm/.rhtml to see if that exists.
+      # try to add .html/.htm to see if that exists.
       elsif (path.to_s =~ /\/$/) || (path.to_s =~ /^[^.]+$/)
         search_files = [path.to_s + ".html", path.to_s + ".htm"].map!{|p| Pathname.new(p) }
       else
