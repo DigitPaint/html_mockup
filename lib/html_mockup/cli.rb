@@ -93,26 +93,6 @@ module HtmlMockup
       end
     end
     
-    desc "convert [directory]","Inject all partials, into all HTML files within directory"
-    method_options :partial_path => :string, # Defaults to [directory]/../partials
-                   :filter => :string # What files should be converted defaults to **/*.html
-    def convert(path=".")
-      path,partial_path = template_paths(path,options["partial_path"])
-      filter = options["filter"] || "**/*.html"      
-      puts "Converting #{filter} in #{path}"
-      puts "  Taking partials from #{partial_path} (#{HtmlMockup::Template.partial_files(partial_path).size} found)"
-      
-      if path.directory?
-      	Dir.glob("#{path}/#{filter}").each do |file|
-      		puts "  Converting file: " + file
-          HtmlMockup::Template.open(file, :partial_path => partial_path).save
-      	end
-      else
-        HtmlMockup::Template.open(path, :partial_path => partial_path).save
-      end	
-      
-    end
-    
     desc "extract [source_path] [target_path]", "Extract a fully relative html mockup into target_path. It will expand all absolute href's, src's and action's into relative links if they are absolute"
     method_options :partial_path => :string, # Defaults to [directory]/partials
                    :filter => :string # What files should be converted defaults to **/*.html
