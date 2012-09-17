@@ -30,8 +30,7 @@ module HtmlMockup
       server = @project.server
       
       puts "Running HtmlMockup with #{server.handler.inspect} on port #{server.port}"
-      puts "  Serving: \"#{server.html_path}\""
-      puts "  Partials: \"#{server.partial_path}\" (#{HtmlMockup::Template.partial_files(server.partial_path).size} found)"
+      puts banner(@project) 
       
       server.run!
     end
@@ -122,6 +121,11 @@ module HtmlMockup
     end
     
     protected
+    
+    def banner(project)
+      puts "  Html: \"#{project.html_path}\""
+      puts "  Partials: \"#{project.partial_path}\" (#{HtmlMockup::Template.partial_files(project.partial_path).size} found)"      
+    end
 
     # TODO: remove this in favour of the project path
     def template_paths(path, partial_path=nil)
