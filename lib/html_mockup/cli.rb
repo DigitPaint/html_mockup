@@ -24,9 +24,6 @@ module HtmlMockup
       # Load the project, it should take care of all the paths
       @project = initialize_project(path, options)
       
-      # Override any Mockupfile settings with commandline options
-      # TODO: Override any Mockupfile settings with commandline options
-      
       server = @project.server
       
       puts "Running HtmlMockup with #{server.handler.inspect} on port #{server.port}"
