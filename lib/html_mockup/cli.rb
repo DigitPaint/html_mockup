@@ -17,8 +17,6 @@ module HtmlMockup
                    :partial_path => :string, # Defaults to [directory]/partials
                    :handler => :string # The handler to use (defaults to mongrel)
     def serve(path=".")      
-      # TODO: Deprecation warning for people used to older versions that had path relative to the HTML directory
-      
       # Load the project, it should take care of all the paths
       @project = initialize_project(path, options)
       
@@ -109,6 +107,12 @@ module HtmlMockup
     
     # TODO: handle options
     def initialize_project(path, options={})
+      
+      if((Pathname.new(path) + "../partials").exist?)
+        puts "[ERROR]: Don't use the \"html\" path, use the project base path instead"
+        exit(1)
+      end
+      
       Project.new(path)
     end
 
