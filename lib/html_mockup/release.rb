@@ -158,15 +158,10 @@ module HtmlMockup
       
       # Extract valid mockup
       extract!
-      # cli = HtmlMockup::Cli.new
-      # cli.invoke(:extract, [self.source_path, self.build_path])
       
       # Run stack
       run_stack!
-      
-      # Inject banners
-      inject_banners!
-      
+            
       # Run injections
       run_injections!
       
@@ -220,10 +215,7 @@ module HtmlMockup
         get_callable(processor, HtmlMockup::Release::Processors).call(self, options)
       end
     end
-    
-    def inject_banners!
-    end
-    
+        
     def run_injections!
       @injections.each do |injection|
         Injector.new(injection[0], injection[1]).call(self)
