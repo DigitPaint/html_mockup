@@ -5,7 +5,7 @@ module HtmlMockup
     
     attr_reader :config, :project
     
-    attr_reader :finalizers, :injections, :stack
+    attr_reader :finalizers, :injections, :stack, :cleanups
     
     def self.default_stack
       []
@@ -33,6 +33,7 @@ module HtmlMockup
       @finalizers = []
       @injections = []
       @stack = []
+      @cleanups = []
     end
     
     # Accessor for target_path
@@ -101,6 +102,16 @@ module HtmlMockup
       @finalizers << [finalizer, options]
     end
     
+    # Files to clean up in the build directory just before finalization happens
+    #
+    # @param [String] Pattern to glob within build directory
+    #
+    # @examples
+    #   release.cleanup "**/.DS_Store"
+    def cleanup(pattern)
+      @cleanups << pattern
+    end
+    
     # Generates a banner if a block is given, or returns the currently set banner.
     # It automatically takes care of adding comment marks around the banner.
     #
@@ -158,6 +169,9 @@ module HtmlMockup
       
       # Run injections
       run_injections!
+      
+      # Run cleanups
+      run_cleanups!
       
       # Run finalizers
       run_finalizers!
@@ -220,6 +234,20 @@ module HtmlMockup
       @finalizers = self.class.default_finalizers.dup if @finalizers.empty?
       @finalizers.each do |finalizer, options|
         get_callable(finalizer, HtmlMockup::Release::Finalizers).call(self, options)
+      end
+    end
+    
+    def run_cleanups!
+      # We switch to the build path and append the globbed files for safety, so even if you manage to sneak in a
+      # pattern like "/**/*" it won't do you any good as it will be reappended to the path
+      Dir.chdir(self.build_path.to_s) do
+        @cleanups.each do |pattern|
+          Dir.glob(pattern).each do |file|
+            path = File.join(self.build_path.to_s, file)
+            log(self, "Cleaning up \"#{path}\" in build")
+            rm(path)
+          end
+        end
       end
     end
     
