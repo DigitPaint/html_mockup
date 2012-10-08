@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{html_mockup}
+  s.name = "html_mockup"
   s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Flurin Egger}]
-  s.date = %q{2012-04-27}
-  s.email = %q{flurin@digitpaint.nl}
-  s.executables = [%q{mockup}]
+  s.authors = ["Flurin Egger"]
+  s.date = "2012-10-08"
+  s.email = "flurin@digitpaint.nl"
+  s.executables = ["mockup"]
   s.extra_rdoc_files = [
     "README.rdoc"
   ]
@@ -23,16 +23,31 @@ Gem::Specification.new do |s|
     "examples/partials/test.part.rhtml",
     "examples/script/server",
     "lib/html_mockup/cli.rb",
+    "lib/html_mockup/extractor.rb",
+    "lib/html_mockup/mockupfile.rb",
+    "lib/html_mockup/project.rb",
     "lib/html_mockup/rack/html_mockup.rb",
     "lib/html_mockup/rack/html_validator.rb",
+    "lib/html_mockup/rack/sleep.rb",
+    "lib/html_mockup/release.rb",
+    "lib/html_mockup/release/finalizers.rb",
+    "lib/html_mockup/release/finalizers/dir.rb",
+    "lib/html_mockup/release/finalizers/zip.rb",
+    "lib/html_mockup/release/injector.rb",
+    "lib/html_mockup/release/processors.rb",
+    "lib/html_mockup/release/processors/requirejs.rb",
+    "lib/html_mockup/release/processors/sass.rb",
+    "lib/html_mockup/release/processors/yuicompressor.rb",
+    "lib/html_mockup/release/scm.rb",
+    "lib/html_mockup/release/scm/git.rb",
     "lib/html_mockup/server.rb",
     "lib/html_mockup/template.rb",
     "lib/html_mockup/w3c_validator.rb"
   ]
-  s.homepage = %q{http://github.com/flurin/html_mockup}
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.6}
-  s.summary = %q{HTML Mockup is a set of tools to create self-containing HTML mockups.}
+  s.homepage = "http://github.com/flurin/html_mockup"
+  s.require_paths = ["lib"]
+  s.rubygems_version = "1.8.24"
+  s.summary = "HTML Mockup is a set of tools to create self-containing HTML mockups."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
@@ -45,7 +60,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rack>, [">= 1.0.0"])
     end
   else
-    s.add_dependency(%q<thor>, ["~> 0.12.0"])
+    s.add_dependency(%q<thor>, ["~> 0.16.0"])
     s.add_dependency(%q<rack>, [">= 1.0.0"])
   end
 end
