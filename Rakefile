@@ -13,6 +13,7 @@ begin
     
     gemspec.add_dependency('thor', '~> 0.16.0')
     gemspec.add_dependency('rack', '>= 1.0.0')
+    gemspec.add_dependency('yui-compressor', '>= 0.9.6')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
