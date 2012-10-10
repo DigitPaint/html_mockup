@@ -8,7 +8,7 @@ module HtmlMockup
       end
   
       def call(env)
-        r = Rack::Request.new(env)
+        r = ::Rack::Request.new(env)
         if r.params["sleep"]
           sleeptime = [r.params["sleep"].to_i, 5].min
           sleep sleeptime
