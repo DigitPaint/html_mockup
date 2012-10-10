@@ -67,7 +67,7 @@ You can also call ./script/server just above the HTML directory.
 
 Options:
 --port:: The port the server should listen on. Defaults to 9000
---partial_path:: the path where the partial files can be found (*.part.html), defaults to director/../partials
+--partial_path:: the path where the partial files can be found (*.part.html), defaults to directory /../partials
 --validate:: Flag to set wether or not we should validate all html files (defaults to false)
 
 ==== mockup generate [directory]
