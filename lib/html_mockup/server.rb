@@ -15,6 +15,10 @@ module HtmlMockup
     
     def initialize(html_path, partial_path, options={})
       @stack = ::Rack::Builder.new 
+      @stack.use ::Rack::ShowExceptions
+      @stack.use ::Rack::Lint
+      @stack.use ::Rack::ConditionalGet
+      @stack.use ::Rack::Head 
 
       @middleware = []
       @html_path = html_path
@@ -29,8 +33,13 @@ module HtmlMockup
     end
         
     # Use the specified Rack middleware
-    def use(middleware, *args, &block)
-      @middleware << [middleware, args, block]
+    def use(*args, &block)
+      @stack.use *args, &block
+    end
+    
+    # Use the map handler to map endpoints to certain urls
+    def map(*args, &block)
+      @stack.map *args, &block
     end
     
     def handler
@@ -60,17 +69,11 @@ module HtmlMockup
     
     def application
       return @app if @app
-      @stack.use ::Rack::ShowExceptions
-      @stack.use ::Rack::Lint
-      @stack.use ::Rack::ConditionalGet
-      @stack.use ::Rack::Head 
-      
-      @middleware.each { |c,a,b| @stack.use(c, *a, &b) }
       
       @stack.use Rack::HtmlValidator if self.options["validate"]
       @stack.run Rack::HtmlMockup.new(self.html_path, self.partial_path)
       
-      @app = @stack.to_app
+      @app = @stack
     end
 
     
