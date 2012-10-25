@@ -9,20 +9,15 @@ module HtmlMockup
     
     attr_reader :options
     
-    attr_accessor :html_path, :partial_path
-    
+    attr_reader :project
+      
     attr_accessor :port, :handler
     
-    def initialize(html_path, partial_path, options={})
-      @stack = ::Rack::Builder.new 
-      @stack.use ::Rack::ShowExceptions
-      @stack.use ::Rack::Lint
-      @stack.use ::Rack::ConditionalGet
-      @stack.use ::Rack::Head 
+    def initialize(project, options={})
+      @stack = initialize_rack_builder
+            
+      @project = project
 
-      @middleware = []
-      @html_path = html_path
-      @partial_path = partial_path
       @options = {
         :handler => nil, # Autodetect
         :port => 9000
@@ -33,11 +28,15 @@ module HtmlMockup
     end
         
     # Use the specified Rack middleware
+    #
+    # @see ::Rack::Builder#use
     def use(*args, &block)
       @stack.use *args, &block
     end
     
     # Use the map handler to map endpoints to certain urls
+    #
+    # @see ::Rack::Builder#map    
     def map(*args, &block)
       @stack.map *args, &block
     end
@@ -55,13 +54,29 @@ module HtmlMockup
         
     protected
     
+    # Build the final application that get's run by the Rack Handler
     def application
       return @app if @app
       
       @stack.use Rack::HtmlValidator if self.options["validate"]
-      @stack.run Rack::HtmlMockup.new(self.html_path, self.partial_path)
+      @stack.run Rack::HtmlMockup.new(self.project.html_path, self.project.partial_path)
       
       @app = @stack
+    end    
+    
+    # Initialize the Rack builder instance for this server
+    #
+    # @return ::Rack::Builder instance
+    def initialize_rack_builder
+      builder = ::Rack::Builder.new 
+      builder.use ::Rack::ShowExceptions
+      builder.use ::Rack::Lint
+      builder.use ::Rack::ConditionalGet
+      builder.use ::Rack::Head      
+      
+      builder 
+    end
+    
     # Get the actual handler for use in the server
     # Will always return a handler, it will try to use the fallbacks
     def get_handler(preferred_handler_name = nil)

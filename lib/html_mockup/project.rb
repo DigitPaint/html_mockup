@@ -29,7 +29,7 @@ module HtmlMockup
     end
     
     def server
-      @server ||= Server.new(self.html_path, self.partial_path)
+      @server ||= Server.new(self)
     end
     
     def release
