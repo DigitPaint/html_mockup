@@ -20,7 +20,10 @@ module HtmlMockup
         :partial_path => @path + "partials"
       }.update(options)
       
-      html_path, partial_path = mockup_paths(options[:html_path], options[:partial_path])
+      paths = mockup_paths(options[:html_path], options[:partial_path])
+      self.html_path = paths[0]
+      self.partial_path = paths[1]
+      
       @mockupfile = Mockupfile.new(self)
       @mockupfile.load
     end
