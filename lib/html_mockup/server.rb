@@ -41,23 +41,9 @@ module HtmlMockup
     def map(*args, &block)
       @stack.map *args, &block
     end
-    
-    def handler
-      if self.options[:handler]
-        begin
-          @handler = ::Rack::Handler.get(self.handler)
-        rescue LoadError
-        rescue NameError
-        end
-        if @handler.nil?
-          puts "Handler '#{self.options[:handler]}' not found, using fallback."
-        end        
-      end
-      @handler ||= detect_rack_handler
-    end
-        
+            
     def run!
-      self.handler.run self.application, self.server_options do |server|
+      self.get_handler(self.handler).run self.application, self.server_options do |server|
         trap(:INT) do
           ## Use thins' hard #stop! if available, otherwise just #stop
           server.respond_to?(:stop!) ? server.stop! : server.stop
@@ -66,6 +52,8 @@ module HtmlMockup
       end
     end
     alias :run :run!
+        
+    protected
     
     def application
       return @app if @app
@@ -74,10 +62,27 @@ module HtmlMockup
       @stack.run Rack::HtmlMockup.new(self.html_path, self.partial_path)
       
       @app = @stack
+    # Get the actual handler for use in the server
+    # Will always return a handler, it will try to use the fallbacks
+    def get_handler(preferred_handler_name = nil)
+      servers = %w[puma mongrel thin webrick]
+      servers.unshift(preferred_handler_name) if preferred_handler_name
+      
+      handler = nil
+      while((server_name = servers.shift) && handler === nil) do 
+        begin
+          handler = ::Rack::Handler.get(server_name)
+        rescue LoadError
+        rescue NameError
+        end
+      end
+            
+      if preferred_handler_name && server_name != preferred_handler_name
+        puts "Handler '#{preferred_handler_name}' not found, using fallback ('#{server_name}')."
+      end
+      handler
     end
-
     
-    protected
     
     # Generate server options for handler
     def server_options
@@ -85,20 +90,6 @@ module HtmlMockup
         :Port => self.port
       }
     end
-    
-    
-    # Sinatra's detect_rack_handler
-    def detect_rack_handler
-      servers = %w[mongrel thin webrick]
-      servers.each do |server_name|
-        begin
-          return ::Rack::Handler.get(server_name)
-        rescue LoadError
-        rescue NameError
-        end
-      end
-      raise "Server handler (#{servers.join(',')}) not found."
-    end    
-    
+
   end
 end
