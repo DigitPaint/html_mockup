@@ -8,7 +8,7 @@ module HtmlMockup::Release::Processors
     def call(release, options={})
       options = {
         :build_files => {"javascripts/site.build.js" => "javascripts"},
-        :rjs => release.source_path + "../vendor/requirejs/r.js",
+        :rjs => "r.js",
         :node => "node"
       }.update(options)
       
@@ -17,9 +17,11 @@ module HtmlMockup::Release::Processors
       rescue Errno::ENOENT
         raise RuntimeError, "Could not find node in #{node.inspect}"
       end
-      
-      if !File.exist?(options[:rjs])
-        raise RuntimeError, "Could not find r.js optimizer at #{options[:rjs].inspect}"
+
+      begin
+        `#{options[:rjs]} -v`
+      rescue Errno::ENOENT
+        raise RuntimeError, "Could not find r.js optimizer in #{rjs.inspect} - try updating this by npm install -g requirejs"
       end
       
       options[:build_files].each do |build_file, target|
@@ -34,7 +36,7 @@ module HtmlMockup::Release::Processors
         t.unlink
       
         # Run r.js optimizer
-        output = `#{options[:node]} #{options[:rjs]} -o #{build_file} dir=#{tmp_build_dir}`
+        output = `#{options[:rjs]} -o #{build_file} dir=#{tmp_build_dir}`
         
         # Check if r.js succeeded
         unless $?.success?
