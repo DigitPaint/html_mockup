@@ -42,7 +42,7 @@ class RequireJS < Test::Unit::TestCase
   
   def test_requireJs_lib
     # Just point options[:rjs] to a file to look if its there,
-    # the user is expected to point to a correct r.js file if he really
+    # the user is expected to point to a correct r.js file if he
     # doesn't want to use the r.js shipped with npm
     options = {:rjs => __FILE__}
     requirejs_processor = HtmlMockup::Release::Processors::Requirejs.new(options)
@@ -51,7 +51,7 @@ class RequireJS < Test::Unit::TestCase
     rjs_command = ''
 
     assert_nothing_raised RuntimeError do
-      # The file does is there - it's this one, so it should raise
+      # The file  is there - it's this one in fact, so it shouldn't raise
       rjs_command = requirejs_processor.rjs_check
     end
 
