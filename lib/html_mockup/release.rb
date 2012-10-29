@@ -277,7 +277,8 @@ module HtmlMockup
       
     end
     
-    # Nothing genius -> it came from the blogz, however, do we really want to load activesupport for this
+    # Nothing genius adjusted from:
+    # http://stackoverflow.com/questions/9524457/converting-string-from-snake-case-to-camel-case-in-ruby
     def camel_case(string)
       return string if string !~ /_/ && string =~ /[A-Z]+.*/
       string.split('_').map{|e| e.capitalize}.join
