@@ -16,9 +16,7 @@ module HtmlMockup::Release::Processors
     # @option options [String] :rjs The system path to the requirejs optimizer (r.js) (defaults to "../vendor/requirejs/r.js" (relative to source_path))
     def call(release, options={})
       @options.update(options)
-      
-      puts @options.inspect
-      
+            
       begin
         `#{@options[:node]} -v`
       rescue Errno::ENOENT
