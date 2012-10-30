@@ -3,19 +3,29 @@ require 'sass'
 
 module HtmlMockup::Release::Processors
   class Sass < Base
-    # @param [Hash] options Options as described below, all other options will be passed to Sass.compile_file.
+    
+    #  Create new Sass processor
     #
-    # @option options [Array] :match An array of shell globs, defaults to ["stylesheets/**/*.scss"]
-    # @option options [Array] :skip An array of regexps which will be skipped, defaults to [/_.*\.scss\Z/], Attention! Skipped files will be deleted as well!
-    def call(release, options={})
-      options = {
+    # @param [Hash] options Options as described below, all other options will be passed to Sass.compile_file.
+    #   @option options [Array] :match An array of shell globs, defaults to ["stylesheets/**/*.scss"]
+    #   @option options [Array] :skip An array of regexps which will be skipped, defaults to [/_.*\.scss\Z/], Attention! Skipped files will be deleted as well!
+
+    def initialize(options = {})
+      @options = {
         :match => ["stylesheets/**/*.scss"],
         :skip => [/_.*\.scss\Z/],
         :style => :expanded
       }.update(options)
-      
-      match = options.delete(:match)
-      skip = options.delete(:skip)
+    end
+    
+    #  Run Sass processor
+    # @param [Release] release Used to define the output paths
+    # @param [Hash] options Options (see initialize)
+    def call(release, options={})
+      @options.update(options)
+
+      match = @options.delete(:match)
+      skip = @options.delete(:skip)
       
       # Sassify SCSS files
       files = release.get_files(match)
@@ -23,7 +33,7 @@ module HtmlMockup::Release::Processors
         if !skip.detect{|r| r.match(f) }
           release.log(self, "Processing: #{f}")          
           # Compile SCSS
-          ::Sass.compile_file(f, f.gsub(/\.scss$/, ".css"), options)
+          ::Sass.compile_file(f, f.gsub(/\.scss$/, ".css"), @options)
         end        
       end
       

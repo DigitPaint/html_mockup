@@ -3,36 +3,43 @@ require 'yui/compressor'
 
 module HtmlMockup::Release::Processors
   class Yuicompressor < Base
-    
+
     # Compresses all JS and CSS files, it will keep all lines before
     # 
     #     /* -------------------------------------------------------------------------------- */
     # 
     # (80 dashes)
-    #
-    # @options options [Array] match Files to match, default to ["**/*.{css,js}"]
-    # @options options [Regexp] :delimiter An array of header delimiters. Defaults to the one above. The delimiter will be removed from the output.
-    # @options options [Array[Regexp]] :skip An array of file regular expressions to specifiy which files to skip. Defaults to [/javascripts\/vendor\/.\*.js\Z/, /_doc\/.*/]
-    def call(release, options={})
-      options = {
+    # @param options Overrideable options for Yui-compressor
+    #   @options options [Array] match Files to match, default to ["**/*.{css,js}"]
+    #   @options options [Regexp] :delimiter An array of header delimiters. Defaults to the one above. The delimiter will be removed from the output.
+    #   @options options [Array[Regexp]] :skip An array of file regular expressions to specifiy which files to skip. Defaults to [/javascripts\/vendor\/.\*.js\Z/, /_doc\/.*/]    
+    def initialize(options = {})
+      @options = {
         :match => ["**/*.{css,js}"],
         :skip =>  [/javascripts\/vendor\/.*\.js\Z/, /_doc\/.*/],
         :delimiter => Regexp.escape("/* -------------------------------------------------------------------------------- */")
-      }.update(options)
+      }.update(options)      
+    end
+    
+    # Compress all JS and CSS file
+    # @param [Release] release Used to define the output paths
+    # @param [Hash] options Options (see initialize)
+    def call(release, options={})
+      @options.update(options)
       
       compressor_options = {:line_break => 80}
       css_compressor = YUI::CssCompressor.new(compressor_options) 
       js_compressor = YUI::JavaScriptCompressor.new(compressor_options)
       
       # Add version numbers and minify the files
-      release.get_files(options[:match], options[:skip]).each do |f|
+      release.get_files(@options[:match], @options[:skip]).each do |f|
         type = f[/\.(.+)$/,1]  
       
         data = File.read(f);
         File.open(f,"w") do |fh| 
           
           # Extract header and store for later use
-          header = data[/\A(.+?)\n#{options[:delimiter]}\s*\n/m,1]
+          header = data[/\A(.+?)\n#{@options[:delimiter]}\s*\n/m,1]
           minified = [header]
     
           # Actual minification

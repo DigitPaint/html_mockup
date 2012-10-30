@@ -2,6 +2,10 @@ require 'fileutils'
 module HtmlMockup::Release::Processors
   class Requirejs < Base
     
+    # @param options [Hash] Options for the requireJs optimizer
+    #   @option options [Hash] :build_files An a hash of files to build (as key) and the target directory in the release to put it as value, each one will be built in a separate directory. (default is {"javascripts/site.build.js" => "javascripts"})
+    #   @option options [String] :node The system path for node (defaults to "node" in path)
+    #   @option options [String] :rjs The system path to the requirejs optimizer (r.js) (defaults to "../vendor/requirejs/r.js" (relative to source_path))
     def initialize(options = {})
       @options = {
         :build_files => {"javascripts/site.build.js" => "javascripts"},
@@ -10,10 +14,9 @@ module HtmlMockup::Release::Processors
       }.update(options)
     end
     
-
-    # @option options [Hash] :build_files An a hash of files to build (as key) and the target directory in the release to put it as value, each one will be built in a separate directory. (default is {"javascripts/site.build.js" => "javascripts"})
-    # @option options [String] :node The system path for node (defaults to "node" in path)
-    # @option options [String] :rjs The system path to the requirejs optimizer (r.js) (defaults to "../vendor/requirejs/r.js" (relative to source_path))
+    # Optimize JS based on the *.build.js or other files defined in @options :build_files
+    # @param [Release] release Used to define the output paths
+    # @param [Hash] options Options (see initialize)
     def call(release, options={})
       @options.update(options)
             
