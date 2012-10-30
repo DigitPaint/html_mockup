@@ -1,5 +1,8 @@
 module HtmlMockup::Release::Processors
   class Base    
+    def initialize(options = {})
+      raise ArgumentError, "Implement in subclass"
+    end
     def call(release, options = {})
       raise ArgumentError, "Implement in subclass"
     end
