@@ -26,8 +26,8 @@ module HtmlMockup::Release::Processors
       
       # Add version numbers and minify the files
       release.get_files(options[:match], options[:skip]).each do |f|
-        type = f[/\.(.+)$/,1]  
-      
+        type = f[/\.([^.]+)\Z/,1]
+        
         data = File.read(f);
         File.open(f,"w") do |fh| 
           
