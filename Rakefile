@@ -3,9 +3,9 @@ begin
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "html_mockup"
     gemspec.email = "flurin@digitpaint.nl"
-    gemspec.homepage = "http://github.com/flurin/html_mockup"
+    gemspec.homepage = "http://github.com/digitpaint/html_mockup"
     gemspec.summary = "HTML Mockup is a set of tools to create self-containing HTML mockups."    
-    gemspec.authors = ["Flurin Egger"]
+    gemspec.authors = ["Flurin Egger", "Edwin van der Graaf"]
     
     gemspec.files = FileList['lib/**/*.rb'] + FileList['bin/*'] + FileList['examples/**/*']
     gemspec.test_files = []
