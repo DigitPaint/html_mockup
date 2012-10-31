@@ -42,8 +42,11 @@ module HtmlMockup::Release::Processors
             minified << css_compressor.compress(data)
           when "js"
             minified << js_compressor.compress(data)
+          else
+            release.log self, "Error minifying: encountered unknown type \"#{type}\""
+            minified << data
           end
-    
+
           fh.write minified.join("\n")
         end
       end
