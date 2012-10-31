@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'thor'
+require 'thor/group'
 
 require 'pathname'
 require 'fileutils'
@@ -7,6 +8,7 @@ include FileUtils
 
 require File.dirname(__FILE__) + "/template"
 require File.dirname(__FILE__) + "/project"
+require File.dirname(__FILE__) + "/generators"
 require File.dirname(__FILE__) + "/w3c_validator"
 
 module HtmlMockup
@@ -64,28 +66,10 @@ module HtmlMockup
       end      
     end
     
-    desc "generate [directory]","Create a new HTML mockup directory tree in directory"
-    def generate(path)
-      path = Pathname.new(path)
-      if path.directory?
-        puts "Directory #{path} already exists, please only use this to create new mockups"
-      else
-        example_path = Pathname.new(File.dirname(__FILE__) + "/../../examples")
-        path.mkpath
-        html_path = path + "html"
-        mkdir(html_path)
-        mkdir(html_path + "stylesheets")
-        mkdir(html_path + "images")
-        mkdir(html_path + "javascripts")
-        
-        mkdir(path + "partials")
-        
-        mkdir(path + "script")
-        cp(example_path + "script/server",path + "script/server")
-        cp(example_path + "config.ru",path + "config.ru")        
-        (path + "script/server").chmod(0755)
-      end
-    end
+    register HtmlMockup::Generators::New, "new", "new [directory]", ""
+    # Hack to register our options/description
+    tasks["new"].options = HtmlMockup::Generators::New.class_options
+    tasks["new"].description = HtmlMockup::Generators::New.desc
     
     desc "extract [source_path] [target_path]", "Extract a fully relative html mockup into target_path. It will expand all absolute href's, src's and action's into relative links if they are absolute"
     method_options :partial_path => :string, # Defaults to [directory]/partials
