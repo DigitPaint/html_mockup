@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "html_mockup"
-  s.version = "0.5.1"
+  s.version = "0.5.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Flurin Egger"]
-  s.date = "2012-10-10"
+  s.authors = ["Flurin Egger", "Edwin van der Graaf"]
+  s.date = "2012-10-31"
   s.email = "flurin@digitpaint.nl"
   s.executables = ["mockup"]
   s.extra_rdoc_files = [
@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
      "lib/html_mockup/rack/html_validator.rb",
      "lib/html_mockup/rack/sleep.rb",
      "lib/html_mockup/release.rb",
-     "lib/html_mockup/release/extractor.rb",
      "lib/html_mockup/release/finalizers.rb",
      "lib/html_mockup/release/finalizers/dir.rb",
      "lib/html_mockup/release/finalizers/zip.rb",
@@ -45,7 +44,7 @@ Gem::Specification.new do |s|
      "lib/html_mockup/template.rb",
      "lib/html_mockup/w3c_validator.rb"
   ]
-  s.homepage = "http://github.com/flurin/html_mockup"
+  s.homepage = "http://github.com/digitpaint/html_mockup"
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.15"
