@@ -35,7 +35,7 @@ class RequireJS < Test::Unit::TestCase
         requirejs_processor.rjs_check
       end
     else
-      requirejs_processor.rjs_check.assert(rjs)
+      assert_equal requirejs_processor.rjs_check, rjs
     end
     
   end
