@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "html_mockup"
-  s.version = "0.5.2"
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Flurin Egger", "Edwin van der Graaf"]
-  s.date = "2012-10-31"
+  s.date = "2012-11-13"
   s.email = "flurin@digitpaint.nl"
   s.executables = ["mockup"]
   s.extra_rdoc_files = [
@@ -17,19 +17,20 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "bin/mockup",
-     "examples/config.ru",
-     "examples/html/green.gif",
-     "examples/html/index.html",
-     "examples/partials/test.part.rhtml",
-     "examples/script/server",
+     "examples/default_template/CHANGELOG",
+     "examples/default_template/Gemfile",
+     "examples/default_template/Mockupfile",
      "lib/html_mockup/cli.rb",
      "lib/html_mockup/extractor.rb",
+     "lib/html_mockup/generators.rb",
+     "lib/html_mockup/generators/new.rb",
      "lib/html_mockup/mockupfile.rb",
      "lib/html_mockup/project.rb",
      "lib/html_mockup/rack/html_mockup.rb",
      "lib/html_mockup/rack/html_validator.rb",
      "lib/html_mockup/rack/sleep.rb",
      "lib/html_mockup/release.rb",
+     "lib/html_mockup/release/cleaner.rb",
      "lib/html_mockup/release/finalizers.rb",
      "lib/html_mockup/release/finalizers/dir.rb",
      "lib/html_mockup/release/finalizers/zip.rb",
