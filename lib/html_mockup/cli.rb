@@ -17,12 +17,22 @@ module HtmlMockup
     method_options :port => :string, # Defaults to 9000
                    :html_path => :string, # The document root, defaults to "[directory]/html"
                    :partial_path => :string, # Defaults to [directory]/partials
-                   :handler => :string # The handler to use (defaults to mongrel)
-    def serve(path=".")      
+                   :handler => :string, # The handler to use (defaults to mongrel)
+                   :validate => :boolean # Run validation?
+    def serve(path=".")
+      
+      server_options = {} 
+      options.each{|k,v| server_options[k.to_sym] = v }
+      server_options[:server] = {}
+      [:port, :handler, :validate].each do |k|
+        server_options[:server][k] = server_options.delete(k) if server_options.has_key?(k)
+      end
+      
       # Load the project, it should take care of all the paths
-      @project = initialize_project(path, options)
+      @project = initialize_project(path, server_options)
       
       server = @project.server
+      server.set_options(server_options[:server])
       
       puts "Running HtmlMockup with #{server.handler.inspect} on port #{server.port}"
       puts banner(@project) 
@@ -97,7 +107,7 @@ module HtmlMockup
         exit(1)
       end
       
-      Project.new(path)
+      Project.new(path, options)
     end
 
     def w3cvalidate(file)

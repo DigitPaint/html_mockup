@@ -17,14 +17,20 @@ module HtmlMockup
       @stack = initialize_rack_builder
             
       @project = project
-
+      
+      set_options(options)
+    end
+    
+    # Sets the options, this is a separate method as we want to override certain
+    # things set in the mockupfile from the commandline
+    def set_options(options)
       @options = {
         :handler => nil, # Autodetect
         :port => 9000
       }.update(options)
       
-      @port = @options[:port]
-      @handler = @options[:handler]
+      self.port = @options[:port]
+      self.handler = @options[:handler]      
     end
         
     # Use the specified Rack middleware
@@ -58,7 +64,7 @@ module HtmlMockup
     def application
       return @app if @app
       
-      @stack.use Rack::HtmlValidator if self.options["validate"]
+      @stack.use Rack::HtmlValidator if self.options[:validate]
       @stack.run Rack::HtmlMockup.new(self.project.html_path, self.project.partial_path)
       
       @app = @stack

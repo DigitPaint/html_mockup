@@ -15,12 +15,12 @@ module HtmlMockup
     def initialize(path, options={})
       @path = Pathname.new(path)
       
-      options = {
+      @options = {
         :html_path => @path + "html",
         :partial_path => @path + "partials"
       }.update(options)
       
-      paths = mockup_paths(options[:html_path], options[:partial_path])
+      paths = mockup_paths(@options[:html_path], @options[:partial_path])
       self.html_path = paths[0]
       self.partial_path = paths[1]
       
@@ -29,11 +29,13 @@ module HtmlMockup
     end
     
     def server
-      @server ||= Server.new(self)
+      options = @options[:server] || {}
+      @server ||= Server.new(self, options)
     end
     
     def release
-      @release ||= Release.new(self)
+      options = @options[:release] || {}      
+      @release ||= Release.new(self, options)
     end
     
     def html_path=(p)
