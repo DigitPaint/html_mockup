@@ -37,11 +37,12 @@ module HtmlMockup
     # @option options [Array] :into An array of file globs relative to the build_path
     def initialize(variables, options)      
       @variables = variables
-      @into = options[:into]
+      @options = options
     end
     
-    def call(release)
-      files = release.get_files(@into)
+    def call(release, options = {})
+      @options.update(options)
+      files = release.get_files(@options[:into])
       
       files.each do |f|
         c = File.read(f)
