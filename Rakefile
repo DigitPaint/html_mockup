@@ -21,5 +21,5 @@ end
 task :default => [:jewelerer]
 
 task :test do
-  ruby "test/unit/processors/RequireJSTests.rb"
+  ruby "test/unit/processors/require_js_test.rb"
 end

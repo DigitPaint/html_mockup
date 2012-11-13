@@ -2,9 +2,9 @@ require "./lib/html_mockup/release.rb"
 require "./lib/html_mockup/release/processors/requirejs"
 require "test/unit"
 
-class RequireJS < Test::Unit::TestCase
+class RequireJsTest < Test::Unit::TestCase
 
-  def test_requireJs_default_fallback
+  def test_require_js_default_fallback
     # When the user points the requirejs processer to a wrong file
     # it should throw an RunTimeError
     options = {:rjs => "s.js"}
@@ -23,7 +23,7 @@ class RequireJS < Test::Unit::TestCase
     
   end
   
-  def test_requireJs_bin
+  def test_require_js_bin
     # When no default require.js path is given we expect it to be r.js availble in $PATH
     requirejs_processor = HtmlMockup::Release::Processors::Requirejs.new
     rjs = "r.js" # Default r.js by npm
@@ -40,7 +40,7 @@ class RequireJS < Test::Unit::TestCase
     
   end
   
-  def test_requireJs_lib
+  def test_require_js_lib
     # Just point options[:rjs] to a file to look if its there,
     # the user is expected to point to a correct r.js file if he
     # doesn't want to use the r.js shipped with npm
