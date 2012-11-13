@@ -30,10 +30,7 @@ module HtmlMockup
       
       @config = {}.update(defaults).update(config)
       @project = project
-      @finalizers = []
-      @injections = []
       @stack = []
-      @cleanups = []
     end
     
     # Accessor for target_path
@@ -78,7 +75,7 @@ module HtmlMockup
     #   release.inject({"VERSION" => release.version, "DATE" => release.date}, :into => %w{_doc/toc.html})
     #   release.inject({"CHANGELOG" => {:file => "", :filter => BlueCloth}}, :into => %w{_doc/changelog.html})  
     def inject(variables, options)
-      @injections << [variables, options]
+      @stack << Injector.new(variables, options)
     end
     
     # Use a certain pre-processor
@@ -86,7 +83,7 @@ module HtmlMockup
     # @examples
     #   release.use :sprockets, sprockets_config
     def use(processor, options = {})
-      @stack << [processor, options]
+      @stack << [get_callable(processor, HtmlMockup::Release::Processors), options]
     end
     
     # Write out the whole release into a directory, zip file or anything you can imagine
@@ -99,7 +96,7 @@ module HtmlMockup
     # @examples
     #   release.finalize :zip
     def finalize(finalizer, options = {})
-      @finalizers << [finalizer, options]
+      @stack << [get_callable(finalizer, HtmlMockup::Release::Finalizers), options]
     end
     
     # Files to clean up in the build directory just before finalization happens
@@ -109,7 +106,7 @@ module HtmlMockup
     # @examples
     #   release.cleanup "**/.DS_Store"
     def cleanup(pattern)
-      @cleanups << pattern
+      @stack << Cleaner.new(pattern)
     end
     
     # Generates a banner if a block is given, or returns the currently set banner.
@@ -161,15 +158,6 @@ module HtmlMockup
       
       # Run stack
       run_stack!
-            
-      # Run injections
-      run_injections!
-      
-      # Run cleanups
-      run_cleanups!
-      
-      # Run finalizers
-      run_finalizers!
       
       # Cleanup
       cleanup! if self.config[:cleanup_build]
@@ -212,34 +200,13 @@ module HtmlMockup
     
     def run_stack!
       @stack = self.class.default_stack.dup if @stack.empty?
-      @stack.each do |processor, options|
-        get_callable(processor, HtmlMockup::Release::Processors).call(self, options)
-      end
-    end
-        
-    def run_injections!
-      @injections.each do |injection|
-        Injector.new(injection[0], injection[1]).call(self)
-      end
-    end
-    
-    def run_finalizers!
-      @finalizers = self.class.default_finalizers.dup if @finalizers.empty?
-      @finalizers.each do |finalizer, options|
-        get_callable(finalizer, HtmlMockup::Release::Finalizers).call(self, options)
-      end
-    end
-    
-    def run_cleanups!
-      # We switch to the build path and append the globbed files for safety, so even if you manage to sneak in a
-      # pattern like "/**/*" it won't do you any good as it will be reappended to the path
-      Dir.chdir(self.build_path.to_s) do
-        @cleanups.each do |pattern|
-          Dir.glob(pattern).each do |file|
-            path = File.join(self.build_path.to_s, file)
-            log(self, "Cleaning up \"#{path}\" in build")
-            rm(path)
-          end
+      
+      # call all objects in @stack
+      @stack.each do |task|
+        if (task.kind_of?(Array))
+          task[0].call(self, task[1])
+        else
+          task.call(self)
         end
       end
     end
@@ -308,5 +275,6 @@ end
 require File.dirname(__FILE__) + "/extractor"
 require File.dirname(__FILE__) + "/release/scm"
 require File.dirname(__FILE__) + "/release/injector"
+require File.dirname(__FILE__) + "/release/cleaner"
 require File.dirname(__FILE__) + "/release/finalizers"
 require File.dirname(__FILE__) + "/release/processors"
