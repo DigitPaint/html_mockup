@@ -47,32 +47,33 @@ to access partials in subdirectories.
 
 === Mockup commandline
 
-==== mockup convert [directory/file]
+==== mockup serve [directory]
 
-Convert can be called with a single html file or a directory. If a directory is specified all .html files
-will be converted. 
+Serve can be used during development as a simple webserver (Puma, Mongrel, Thin, Webrick). It also supports on-the-fly HTML validation. 
 
-*Warning:* Convert will overwrite the file itself!
-
-Options:
---partial_path:: the path where the partial files can be found (*.part.html), defaults to director/../partials
---filter:: The filter to use when finding templates within directory, defaults to *.html 
-
-==== mockup serve [directory/file]
-
-Serve can be used during development as a simple webserver (Webrick/Mongrel). It also supports
-on-the-fly HTML validation. 
-
-You can also call ./script/server just above the HTML directory.
+The directory to serve must contain `[directory]/html` and `[directory]/partials` (unless you have specified `--partial_path` and `--html_path`)
 
 Options:
 --port:: The port the server should listen on. Defaults to 9000
---partial_path:: the path where the partial files can be found (*.part.html), defaults to directory /../partials
+--partial_path:: the path where the partial files can be found (*.part.html), defaults to directory `[directory]/partials`
+--html_path:: the path where the html files can be found (*.html), defaults to directory `[directory]/html`
 --validate:: Flag to set wether or not we should validate all html files (defaults to false)
 
-==== mockup generate [directory]
+==== mockup release [directory]
+
+Makes a release of the current mockup project
+
+==== mockup new [directory]
 
 Generate creates a directory structure in directory for use with new HTML mockups.
+
+==== mockup extract [source_path] [target_path]
+
+Extract a fully relative html mockup into target_path. It will expand all absolute href's, src's and action's into relative links if they are absolute
+
+Options:
+--partial_path:: Defaults to [directory]/partials
+--filter:: What files should be converted defaults to **/*.html
 
 ==== mockup validate [directory/file]
 
@@ -83,4 +84,4 @@ Options:
 --filter:: What files should be validated, defaults to [^_]*.html
 
 === Copyright & license
-Copyright (c) 2011 Flurin Egger, DigitPaint, MIT Style License. (see MIT-LICENSE)
+Copyright (c) 2012 Flurin Egger, Edwin van der Graaf, DigitPaint, MIT Style License. (see MIT-LICENSE)
