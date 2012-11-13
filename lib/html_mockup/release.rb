@@ -224,12 +224,12 @@ module HtmlMockup
       return callable if callable.respond_to?(:call)
       
       if callable.kind_of?(Symbol)
-        # TODO camelcase callable
-        callable = callable.to_s.capitalize.to_sym
+        callable = camel_case(callable.to_s).to_sym
         if scope.constants.include?(callable)
           c = scope.const_get(callable)
           callable = c if c.is_a?(Class)
         end
+        
       end
       
       if callable.kind_of?(Class)
@@ -242,6 +242,13 @@ module HtmlMockup
         raise ArgumentError, "Could not resolve #{callable.inspect}. Callable must be an object that responds to #call or a symbol that resolve to such an object or a class with a #call instance method."
       end
       
+    end
+    
+    # Nothing genius adjusted from:
+    # http://stackoverflow.com/questions/9524457/converting-string-from-snake-case-to-camel-case-in-ruby
+    def camel_case(string)
+      return string if string !~ /_/ && string =~ /[A-Z]+.*/
+      string.split('_').map{|e| e.capitalize}.join
     end
     
     # @param [String] string The string to comment
