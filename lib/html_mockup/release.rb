@@ -25,7 +25,7 @@ module HtmlMockup
         return callable if callable.respond_to?(:call)
       
         if callable.kind_of?(Symbol)
-          callable = camel_case(callable)
+          callable = camel_case(callable.to_s).to_sym
           if scope.constants.include?(callable)
             c = scope.const_get(callable)
             callable = c if c.is_a?(Class)
