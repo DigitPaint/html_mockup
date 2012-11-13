@@ -6,11 +6,15 @@ require 'fileutils'
 #
 module HtmlMockup::Release::Finalizers
   class Dir < Base
+    def initialize(options = {})
+      @options = options
+    end
     
     # @option options :prefix Prefix to put before the version (default = "html")
     def call(release, options = {})
-      name = [(options[:prefix] || "html"), release.scm.version].join("-")
-      
+      @options.update(options)
+
+      name = [(@options[:prefix] || "html"), release.scm.version].join("-")      
       release.log(self, "Finalizing release to #{release.target_path + name}")
       
       if File.exist?(release.target_path + name)
