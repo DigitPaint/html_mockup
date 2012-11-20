@@ -1,5 +1,9 @@
 # Changelog
 
+## EDGE
+* Add the tilt gem as a requirement (needed for injectors in release)
+* Make the cleaner also remove directories, also make it more safe (it will never delete stuff above the build_path)
+
 ## Version 0.6.0
 * Pass command line options to underlying objets
 * Update docs
