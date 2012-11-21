@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.6.2
+* Improved cleaner with more robust tests
+
 ## Version 0.6.1
 * Correctly pass file and linenumber to Mockupfile evaluation
 * Add the tilt gem as a requirement (needed for injectors in release)
