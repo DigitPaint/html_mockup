@@ -1,6 +1,6 @@
 # Changelog
 
-## EDGE
+## Version 0.6.1
 * Correctly pass file and linenumber to Mockupfile evaluation
 * Add the tilt gem as a requirement (needed for injectors in release)
 * Make the cleaner also remove directories, also make it more safe (it will never delete stuff above the build_path)
