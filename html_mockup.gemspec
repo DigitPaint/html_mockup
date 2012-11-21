@@ -49,6 +49,7 @@ Gem::Specification.new do |s|
      "lib/html_mockup/w3c_validator.rb"
   ]
   s.homepage = "http://github.com/digitpaint/html_mockup"
+  s.licenses = ["MIT"]
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.15"
