@@ -1,5 +1,8 @@
 # Changelog
 
+## EDGE
+* Add license to gemspec
+
 ## Version 0.6.2
 * Improved cleaner with more robust tests
 

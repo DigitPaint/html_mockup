@@ -6,6 +6,7 @@ begin
     gemspec.homepage = "http://github.com/digitpaint/html_mockup"
     gemspec.summary = "HTML Mockup is a set of tools to create self-containing HTML mockups."    
     gemspec.authors = ["Flurin Egger", "Edwin van der Graaf"]
+    gemspec.license = 'MIT'
     
     gemspec.files = FileList['lib/**/*.rb'] + FileList['bin/*'] + FileList['examples/**/*']
     gemspec.test_files = []
