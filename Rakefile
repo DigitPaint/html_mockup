@@ -8,7 +8,7 @@ begin
     gemspec.authors = ["Flurin Egger", "Edwin van der Graaf"]
     gemspec.license = 'MIT'
     
-    gemspec.files = FileList['lib/**/*.rb'] + FileList['bin/*'] + FileList['examples/**/*']
+    gemspec.files = FileList['lib/**/*.rb'] + FileList['bin/*'] + FileList['examples/**/*'] + FileList['examples/**/.*']
     gemspec.test_files = []
     gemspec.has_rdoc = false
     

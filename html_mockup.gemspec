@@ -17,9 +17,12 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "bin/mockup",
+     "examples/default_template/.gitignore",
      "examples/default_template/CHANGELOG",
      "examples/default_template/Gemfile",
      "examples/default_template/Mockupfile",
+     "examples/default_template/html/.empty_directory",
+     "examples/default_template/partials/.empty_directory",
      "lib/html_mockup/cli.rb",
      "lib/html_mockup/extractor.rb",
      "lib/html_mockup/generators.rb",
