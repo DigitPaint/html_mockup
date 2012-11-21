@@ -33,7 +33,7 @@ module HtmlMockup
       if File.exist?(@path) && !self.loaded?
         @source = File.read(@path)
         context = Context.new(self)
-        eval @source, context.binding
+        eval @source, context.binding, @path.to_s, 1
         @loaded = true
       end      
     end
