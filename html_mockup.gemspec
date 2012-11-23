@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "html_mockup"
-  s.version = "0.6.2"
+  s.version = "0.6.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Flurin Egger", "Edwin van der Graaf"]
-  s.date = "2012-11-21"
+  s.date = "2012-11-23"
   s.email = "flurin@digitpaint.nl"
   s.executables = ["mockup"]
   s.extra_rdoc_files = [
