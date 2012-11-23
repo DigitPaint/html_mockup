@@ -5,9 +5,16 @@ module HtmlMockup
     
     attr_reader :project, :target_path
     
-    def initialize(project, target_path)
+    def initialize(project, target_path, options={})
       @project = project
       @target_path = Pathname.new(target_path)
+      
+      @options = {
+        :url_attributes => %w{src href action}
+      }
+      
+      @options.update(options) if options
+      
     end
     
     def run!
@@ -30,7 +37,7 @@ module HtmlMockup
           cur_dir = Pathname.new(file_name).dirname
           up_to_root = File.join([".."] * (file_name.split("/").size - 1))
           doc = Hpricot(source)
-          %w{src href action}.each do |attribute|
+          @options[:url_attributes].each do |attribute|
             (doc/"*[@#{attribute}]").each do |tag|
               converted_url = convert_relative_url_to_absolute_url(tag[attribute], cur_dir,  up_to_root)
               
