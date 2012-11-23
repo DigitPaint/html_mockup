@@ -135,7 +135,7 @@ module HtmlMockup
     # @examples
     #   release.finalize :zip
     def finalize(finalizer, options = {})
-      @finalize << [self.class.get_callable(finalizer, HtmlMockup::Release::Finalizers), options]
+      @finalizers << [self.class.get_callable(finalizer, HtmlMockup::Release::Finalizers), options]
     end
     
     # Files to clean up in the build directory just before finalization happens
