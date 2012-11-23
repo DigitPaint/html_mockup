@@ -20,7 +20,7 @@ module HtmlMockup::Release::Processors
       begin
         `#{@options[:node]} -v`
       rescue Errno::ENOENT
-        raise RuntimeError, "Could not find node in #{node.inspect}"
+        raise RuntimeError, "Could not find node in #{@options[:node].inspect}"
       end
       
       rjs_command = rjs_check()
