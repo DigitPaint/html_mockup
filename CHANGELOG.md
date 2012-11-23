@@ -1,7 +1,11 @@
 # Changelog
 
-## EDGE
+## Version 0.6.3
 * Add license to gemspec
+* Fix default_template in gem
+* Add option to allow for resolving urls in custom attributes in the extractor (via `release.extract(options_hash)`)
+* Add more unified interface to finalizers and processors
+* Fix error if node can't be found in Processors::Requirejs
 
 ## Version 0.6.2
 * Improved cleaner with more robust tests
