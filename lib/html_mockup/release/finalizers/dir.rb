@@ -5,16 +5,16 @@ require 'fileutils'
 # The directory name will have the format PREFIX-VERSION
 #
 module HtmlMockup::Release::Finalizers
-  class Dir < Base
-    def initialize(options = {})
-      @options = options
-    end
-    
+  class Dir < Base    
     # @option options :prefix Prefix to put before the version (default = "html")
     def call(release, options = {})
-      @options.update(options)
+      if options
+        options = @options.dup.update(options)
+      else
+        options = @options
+      end
 
-      name = [(@options[:prefix] || "html"), release.scm.version].join("-")      
+      name = [(options[:prefix] || "html"), release.scm.version].join("-")      
       release.log(self, "Finalizing release to #{release.target_path + name}")
       
       if File.exist?(release.target_path + name)
