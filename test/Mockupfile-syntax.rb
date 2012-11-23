@@ -13,11 +13,14 @@ mockup.serve(config) do |server|
 end
 
 mockup.release(config) do |release|
+  
   release.target_path # The target path where releases are put
   release.build_path # The path where the release gets built
   release.source_path # The source for this mockup
   
   # Extract mockup
+  # Pass custom config to the extractor, this is optional
+  # release.extract :url_attributes =>  %w{src href action data-main}
   
   # Get git version
   release.scm.previous # Get the previous version SCM op (looks for tags)

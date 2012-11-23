@@ -187,13 +187,23 @@ module HtmlMockup
       end
     end
     
+    # Extract the mockup, this will happen anyway, and will always happen first
+    # This method gives you a way to pass options to the extractor.
+    #
+    # @param Hash options Options hash passed to extractor
+    #
+    # @see  HtmlMockup::Extractor for more information
+    def extract(options = {})
+      @extractor_options = options
+    end
+    
     # Actually perform the release
     def run!
       # Validate paths
       validate_paths!
       
       # Extract valid mockup
-      extract!
+      run_extractor!
       
       # Run stack
       run_stack!
@@ -235,8 +245,8 @@ module HtmlMockup
       raise ArgumentError, "Target path \"#{self.target_path}\" does not exist" if !self.target_path.exist?      
     end
     
-    def extract!
-      extractor = Extractor.new(self.project, self.build_path)
+    def run_extractor!
+      extractor = Extractor.new(self.project, self.build_path, @extractor_options)
       extractor.run!
     end
     
