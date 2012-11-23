@@ -17,8 +17,6 @@ module HtmlMockup::Release::Processors
     def call(release, options={})
       @options.update(options)
       
-      puts @options.inspect
-      
       begin
         `#{@options[:node]} -v`
       rescue Errno::ENOENT

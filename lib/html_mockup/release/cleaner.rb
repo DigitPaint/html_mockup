@@ -3,6 +3,7 @@ module HtmlMockup
     def initialize(pattern)
       @pattern = pattern
     end
+    
     def call(release, options = {})
       # We switch to the build path and append the globbed files for safety, so even if you manage to sneak in a
       # pattern like "/**/*" it won't do you any good as it will be reappended to the path
