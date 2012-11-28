@@ -1,10 +1,11 @@
 require 'fileutils'
 
-# Finalizes the release into a directory in target_path
-# 
-# The directory name will have the format PREFIX-VERSION
-#
 module HtmlMockup::Release::Finalizers
+  
+  # Finalizes the release into a directory in target_path
+  # 
+  # The directory name will have the format PREFIX-VERSION
+  #  
   class Dir < Base    
     # @option options :prefix Prefix to put before the version (default = "html")
     def call(release, options = {})
