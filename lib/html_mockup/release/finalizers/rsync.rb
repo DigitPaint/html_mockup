@@ -44,7 +44,7 @@ module HtmlMockup::Release::Finalizers
 
       release.log(self, "Starting upload of #{(release.build_path + "*")} to #{options[:host]}")
     
-      command = "rsync -az #{Shellwords.escape(local_path)} #{Shellwords.escape(options[:username])}@#{Shellwords.escape(options[:host])}:#{Shellwords.escape(remote_path)}"
+      command = "#{options[:rsync]} -az #{Shellwords.escape(local_path)} #{Shellwords.escape(options[:username])}@#{Shellwords.escape(options[:host])}:#{Shellwords.escape(remote_path)}"
     
       # Run r.js optimizer
       output = `#{command}`
