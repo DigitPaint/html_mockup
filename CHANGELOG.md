@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.6.4
+* Add RsyncFinalizer to automatically upload your mockup
+
 ## Version 0.6.3
 * Add license to gemspec
 * Fix default_template in gem
