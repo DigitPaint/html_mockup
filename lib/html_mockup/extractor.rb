@@ -5,6 +5,13 @@ module HtmlMockup
     
     attr_reader :project, :target_path
     
+    
+    # @param [Project] project Project object
+    # @param [String,Pathname] target_path Path to extract to
+    # @param [Hash] options Options hash
+    
+    # @option options [Array] :url_attributes The element attributes to parse and relativize
+    # @option options [Array] :url_relativize Wether or not we should relativize
     def initialize(project, target_path, options={})
       @project = project
       @target_path = Pathname.new(target_path)
