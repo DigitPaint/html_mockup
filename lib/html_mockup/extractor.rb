@@ -10,11 +10,11 @@ module HtmlMockup
       @target_path = Pathname.new(target_path)
       
       @options = {
-        :url_attributes => %w{src href action}
+        :url_attributes => %w{src href action},
+        :url_relativize => true
       }
       
       @options.update(options) if options
-      
     end
     
     def run!
@@ -34,29 +34,39 @@ module HtmlMockup
       Dir.chdir(source_path) do
         Dir.glob(filter).each do |file_name|
           source = HtmlMockup::Template.open(file_name, :partial_path => partial_path).render
-          cur_dir = Pathname.new(file_name).dirname
-          up_to_root = File.join([".."] * (file_name.split("/").size - 1))
-          doc = Hpricot(source)
-          @options[:url_attributes].each do |attribute|
-            (doc/"*[@#{attribute}]").each do |tag|
-              converted_url = convert_relative_url_to_absolute_url(tag[attribute], cur_dir,  up_to_root)
-              
-              case converted_url
-              when String
-                tag[attribute] = converted_url
-              when nil
-                puts "Could not resolve link #{tag[attribute]} in #{file_name}"
-              end
-            end
+          
+          if @options[:url_relativize]
+            source = relativize_urls(source, file_name)
           end
 
-          File.open(target_path + file_name,"w"){|f| f.write(doc.to_original_html) }
+          File.open(target_path + file_name,"w"){|f| f.write(source) }
         end
       end           
     end
 
     
     protected
+    
+    def relativize_urls(source, file_name)
+      cur_dir = Pathname.new(file_name).dirname
+      up_to_root = File.join([".."] * (file_name.split("/").size - 1))
+          
+      doc = Hpricot(source)
+      @options[:url_attributes].each do |attribute|
+        (doc/"*[@#{attribute}]").each do |tag|
+          converted_url = convert_relative_url_to_absolute_url(tag[attribute], cur_dir,  up_to_root)
+              
+          case converted_url
+          when String
+            tag[attribute] = converted_url
+          when nil
+            puts "Could not resolve link #{tag[attribute]} in #{file_name}"
+          end
+        end
+      end
+      
+      doc.to_original_html      
+    end
     
     # @return [false, nil, String] False if it can't be converted, nil if it can't be resolved and the converted string if it can be resolved.
     def convert_relative_url_to_absolute_url(url, cur_dir, up_to_root)
