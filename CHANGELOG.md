@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.6.5
+* Allow disabling of URL relativizing in the extractor with `release.extract :url_relativize => false`
+* Add missing Hpricot dependency to gem
+
 ## Version 0.6.4
 * Add RsyncFinalizer to automatically upload your mockup
 
