@@ -1,5 +1,8 @@
 # Changelog
 
+## Edge
+* Replace --quiet with -s in as it's no longer supported in newer GIT versions
+
 ## Version 0.6.5
 * Allow disabling of URL relativizing in the extractor with `release.extract :url_relativize => false`
 * Add missing Hpricot dependency to gem

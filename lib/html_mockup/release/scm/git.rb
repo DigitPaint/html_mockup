@@ -61,7 +61,7 @@ module HtmlMockup::Release::Scm
           
           if $?.to_i > 0
             # HEAD is not a tagged verison, get the short SHA1 instead            
-            @_version = `git --git-dir=#{git_dir} show #{ref} --format=format:"%h" --quiet 2>&1` 
+            @_version = `git --git-dir=#{git_dir} show #{ref} --format=format:"%h" -s 2>&1` 
           else
             # HEAD is a tagged version, if version is prefixed with "v" it will be stripped off
             @_version.gsub!(/^v/,"")
@@ -69,7 +69,7 @@ module HtmlMockup::Release::Scm
           @_version.strip!
     
           # Get the date in epoch time
-          date = `git --git-dir=#{git_dir} show #{ref} --format=format:"%ct" --quiet 2>&1`
+          date = `git --git-dir=#{git_dir} show #{ref} --format=format:"%ct" -s 2>&1`
           if date =~ /\d+/
             @_date = Time.at(date.to_i)
           else
