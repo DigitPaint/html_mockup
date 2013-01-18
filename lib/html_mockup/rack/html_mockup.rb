@@ -37,7 +37,7 @@ module HtmlMockup
             templ = ::HtmlMockup::Template.open(template_path, :partial_path => @partial_path)
             resp = ::Rack::Response.new do |res|
               res.status = 200
-              res.write templ.render
+              res.write templ.render(env)
             end
             resp.finish
           rescue StandardError => e

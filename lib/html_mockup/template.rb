@@ -73,7 +73,7 @@ module HtmlMockup
 
     		# scan until end of tag
     		current_content = self.scanner.scan_until(/<!-- \[STOP:#{tag}\] -->/)
-    		out << (render_partial(tag, params) || current_content)
+    		out << (render_partial(tag, params, env) || current_content)
     	end
     	out << scanner.rest    
     end
