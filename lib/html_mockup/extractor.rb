@@ -12,13 +12,15 @@ module HtmlMockup
     
     # @option options [Array] :url_attributes The element attributes to parse and relativize
     # @option options [Array] :url_relativize Wether or not we should relativize
+    # @option options [Array] :env ENV variable to pass to template renderer.
     def initialize(project, target_path, options={})
       @project = project
       @target_path = Pathname.new(target_path)
       
       @options = {
         :url_attributes => %w{src href action},
-        :url_relativize => true
+        :url_relativize => true,
+        :env => {}
       }
       
       @options.update(options) if options
@@ -26,7 +28,7 @@ module HtmlMockup
     
     def run!
       target_path = self.target_path
-      source_path, partial_path = self.project.html_path, self.project.partial_path
+      source_path = self.project.html_path
       
       
       filter = "**/*.html"
@@ -39,16 +41,26 @@ module HtmlMockup
       cp_r(source_path.children, target_path)
       
       Dir.chdir(source_path) do
-        Dir.glob(filter).each do |file_name|
-          source = HtmlMockup::Template.open(file_name, :partial_path => partial_path).render
-          
-          if @options[:url_relativize]
-            source = relativize_urls(source, file_name)
-          end
-
-          File.open(target_path + file_name,"w"){|f| f.write(source) }
+        Dir.glob(filter).each do |file_path|
+          self.run_on_file!(file_path, @options[:env])
         end
       end           
+    end
+    
+    def run_on_file!(file_path, env = {})
+      source = self.extract_source_from_file(file_path, env)
+      File.open(target_path + file_path,"w"){|f| f.write(source) }      
+    end
+    
+    # Runs the extractor on a single file
+    def extract_source_from_file(file_path, env = {})
+      source = HtmlMockup::Template.open(file_path, :partial_path => self.project.partial_path).render(env)
+          
+      if @options[:url_relativize]
+        source = relativize_urls(source, file_path)
+      end
+
+      source
     end
 
     
@@ -56,7 +68,8 @@ module HtmlMockup
     
     def relativize_urls(source, file_name)
       cur_dir = Pathname.new(file_name).dirname
-      up_to_root = File.join([".."] * (file_name.split("/").size - 1))
+      puts file_name.to_s.split("/").inspect
+      up_to_root = File.join([".."] * (file_name.to_s.split("/").size - 1))
           
       doc = Hpricot(source)
       @options[:url_attributes].each do |attribute|
