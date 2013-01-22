@@ -11,7 +11,7 @@ module HtmlMockup
   class Template
   
     class << self
-      def open(filename,options={})
+      def open(filename, options={})
         raise "Unknown file #{filename}" unless File.exist?(filename)
         self.new(File.read(filename),options.update(:target_file => filename))
       end
@@ -40,18 +40,17 @@ module HtmlMockup
   
     # Create a new HtmlMockupTemplate
     #
-    # ==== Parameters
-    # template<String>:: The template to parse
-    # options<Hash>:: See options
+    # @param [String] source The template to parse
+    # @param [Hash] options See options
     #
-    # ==== Options (optional)
-    # partial_path<String>:: Path where the partials reside (default: $0/../../partials)
-    #--
-    def initialize(template, options={})
-      defaults = {:partial_path => File.dirname(__FILE__) + "/../../partials/"}
-      @template = template
+    # @option options [String] partial_path Path where the partials reside (default: $0/../../partials)
+    def initialize(source, options={})
+      defaults = {
+        :partial_path => File.dirname(__FILE__) + "/../../partials/"
+      }
+      @source = source
+      @template = Tilt::ERBTemplate.new{ @source }      
       @options = defaults.update(options)
-      @scanner = StringScanner.new(@template)
       raise "Partial path '#{self.options[:partial_path]}' not found" unless File.exist?(self.options[:partial_path])
     end
   
@@ -66,6 +65,7 @@ module HtmlMockup
     # String:: The rendered template
     #--
     def render(env={})
+      @scanner = StringScanner.new(@template.render(Object.new, :env => env))      
       out = ""
     	while (partial = self.parse_partial_tag!) do
     	  tag,params,scanned = partial
