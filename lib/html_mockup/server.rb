@@ -65,7 +65,7 @@ module HtmlMockup
       return @app if @app
       
       @stack.use Rack::HtmlValidator if self.options[:validate]
-      @stack.run Rack::HtmlMockup.new(self.project.html_path, self.project.partial_path)
+      @stack.run Rack::HtmlMockup.new(self.project)
       
       @app = @stack
     end    

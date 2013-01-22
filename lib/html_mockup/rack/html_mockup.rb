@@ -8,7 +8,13 @@ module HtmlMockup
   module Rack
     
     class HtmlMockup
-      def initialize(root,partial_path)
+      
+      attr_reader :project
+      
+      def initialize(project)
+        @project = project
+        root,partial_path = project.html_path, project.partial_path
+        
         @docroot = root
         @partial_path = partial_path
         @file_server = ::Rack::File.new(@docroot)
