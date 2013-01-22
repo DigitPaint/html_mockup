@@ -27,6 +27,8 @@ module HtmlMockup
       }
       
       @options.update(options) if options
+      
+      env.update("MOCKUP_PROJECT" => project)
     end
     
     def run!

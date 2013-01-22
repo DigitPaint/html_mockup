@@ -22,6 +22,7 @@ module HtmlMockup
 
       def call(env)
         url = env["PATH_INFO"]
+        env["MOCKUP_PROJECT"] = project
         
         resolver = Resolver.new(@docroot)
 
