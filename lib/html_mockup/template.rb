@@ -44,12 +44,13 @@ module HtmlMockup
     # @param [Hash] options See options
     #
     # @option options [String] partial_path Path where the partials reside (default: $0/../../partials)
+    # @option options [String] target_file Path of the processed file
     def initialize(source, options={})
       defaults = {
         :partial_path => File.dirname(__FILE__) + "/../../partials/"
       }
       @source = source
-      @template = Tilt::ERBTemplate.new{ @source }      
+      @template = Tilt::ERBTemplate.new(options[:target_file].to_s){ @source }      
       @options = defaults.update(options)
       raise "Partial path '#{self.options[:partial_path]}' not found" unless File.exist?(self.options[:partial_path])
     end
