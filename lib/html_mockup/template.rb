@@ -2,6 +2,7 @@ require 'pathname'
 require 'strscan'
 require 'erb'
 require 'cgi'
+require 'tilt'
 
 module HtmlMockup
   
@@ -115,24 +116,18 @@ module HtmlMockup
       unless self.available_partials[tag]
         raise MissingPartial.new("Could not find partial '#{tag}' in partial path '#{@options[:partial_path]}'")
       end
-      template = ERB.new(self.available_partials[tag])
-      context = TemplateContext.new(params, env)
-      "\n" + template.result(context.get_binding).rstrip + "\n<!-- [STOP:#{tag}] -->"
+      template = Tilt::ERBTemplate.new{ self.available_partials[tag] }
+      context = TemplateContext.new(params)
+      "\n" + template.render(context, :env => env).rstrip + "\n<!-- [STOP:#{tag}] -->"
     end
   
     class TemplateContext
       # Params will be set as instance variables
-      def initialize(params, env = {})
+      def initialize(params)
         params.each do |k,v|
           self.instance_variable_set("@#{k}",v)
         end
-        
-        @_env = env;
-      end
-      
-      def env; @_env; end
-      
-      def get_binding; binding(); end
+      end      
     end
   
   end
