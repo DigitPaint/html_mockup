@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.1
+* Pass target_file to the ERBTemplate to files with erb errors
+* Fix env["MOCKUP_PROJECT"] setting in extractor
+
 ## Version 0.7.0
 * Replace --quiet with -s in as it's no longer supported in newer GIT versions
 * Add support for ENV passing to the partials
