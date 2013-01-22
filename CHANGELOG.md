@@ -1,6 +1,6 @@
 # Changelog
 
-## Edge
+## Version 0.7.0
 * Replace --quiet with -s in as it's no longer supported in newer GIT versions
 * Add support for ENV passing to the partials
 * Add support for single file processing and env passing in the extractor (release)
