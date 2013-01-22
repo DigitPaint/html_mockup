@@ -4,6 +4,9 @@
 * Replace --quiet with -s in as it's no longer supported in newer GIT versions
 * Add support for ENV passing to the partials
 * Add support for single file processing and env passing in the extractor (release)
+* Refactor path and url resolving
+* Allow `.html` files to be processed by ERB (both in release and serve)
+* Pass "MOCKUP_PROJECT" variable to env (both in release and serve)
 
 ## Version 0.6.5
 * Allow disabling of URL relativizing in the extractor with `release.extract :url_relativize => false`
