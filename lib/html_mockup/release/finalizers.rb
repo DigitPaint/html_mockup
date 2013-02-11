@@ -14,4 +14,5 @@ end
 
 require File.dirname(__FILE__) + "/finalizers/zip"
 require File.dirname(__FILE__) + "/finalizers/dir"
+require File.dirname(__FILE__) + "/finalizers/rsync"
 
