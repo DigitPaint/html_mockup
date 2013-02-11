@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.7.2
+* Add zip finalizers
+* Instead of complaining about existing build path, just clean it up
+* Instead of complaining about unexisting target path, just create it
+* Automatically require all built-in procssors
+
 ## Version 0.7.1
 * Pass target_file to the ERBTemplate to files with erb errors
 * Fix env["MOCKUP_PROJECT"] setting in extractor
