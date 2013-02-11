@@ -238,11 +238,15 @@ module HtmlMockup
     # ==============
     
     def validate_paths!
-      # Make sure the build_path is empty
-      raise ArgumentError, "Build path \"#{self.build_path}\" is not empty" if self.build_path.exist?
+      if self.build_path.exist?
+        log self, "Cleaning up previous build \"#{self.build_path}\""
+        rm_rf(self.build_path)
+      end
         
-      # Make sure the target_path exists
-      raise ArgumentError, "Target path \"#{self.target_path}\" does not exist" if !self.target_path.exist?      
+      if !self.target_path.exist?
+        log self, "Creating target path \"#{self.target_path}\""
+        mkdir self.target_path
+      end
     end
     
     def run_extractor!
