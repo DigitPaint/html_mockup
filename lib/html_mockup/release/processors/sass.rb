@@ -17,6 +17,14 @@ module HtmlMockup::Release::Processors
       match = options.delete(:match)
       skip = options.delete(:skip)
       
+      unless options.has_key?(:load_paths)
+        if ::Sass::Plugin.options[:template_location].kind_of?(Hash)
+          options[:load_paths] = ::Sass::Plugin.template_location_array.map{|k,v| k }
+        else
+          options[:load_paths] = [(release.build_path + "stylesheets").to_s]
+        end
+      end
+      
       # Sassify SCSS files
       files = release.get_files(match)
       files.each do |f|
