@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "html_mockup"
-  s.version = "0.7.2"
+  s.version = "0.7.3"
   
   s.authors = ["Flurin Egger", "Edwin van der Graaf"]
   s.email = ["info@digitpaint.nl", "flurin@digitpaint.nl"]  
