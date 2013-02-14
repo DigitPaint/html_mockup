@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.3
+* Set a sensible `load_path` for sass in release mode (defaults to `build_path + "stylesheets"`)
+* Also automatically require the rsync finalizers
+
 ## Version 0.7.2
 * Add zip finalizers
 * Instead of complaining about existing build path, just clean it up
