@@ -1,6 +1,6 @@
 # Changelog
 
-## Edge
+## Version 0.7.4
 * Allow for underscores in .scss files when releasing
 
 ## Version 0.7.3
