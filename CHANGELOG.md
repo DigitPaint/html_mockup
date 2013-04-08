@@ -1,5 +1,8 @@
 # Changelog
 
+## Edge
+* Allow for underscores in .scss files when releasing
+
 ## Version 0.7.3
 * Set a sensible `load_path` for sass in release mode (defaults to `build_path + "stylesheets"`)
 * Also automatically require the rsync finalizers

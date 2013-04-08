@@ -10,7 +10,7 @@ module HtmlMockup::Release::Processors
     def call(release, options={})
       options = {
         :match => ["stylesheets/**/*.scss"],
-        :skip => [/_.*\.scss\Z/],
+        :skip => [/\/_.*\.scss\Z/],
         :style => :expanded
       }.update(options)
       
