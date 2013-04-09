@@ -33,7 +33,7 @@ module HtmlMockup::Release::Finalizers
       end
 
       ::Dir.chdir(release.build_path) do
-        `zip -r -9 "#{release.target_path + name}" ./*`
+        `#{options[:zip]} -r -9 "#{release.target_path + name}" ./*`
       end
     end
     

@@ -1,5 +1,8 @@
 # Changelog
 
+## Edge
+* Fix zip finalizer to use options[:zip] in actuall executed command too
+
 ## Version 0.7.4
 * Allow for underscores in .scss files when releasing
 
