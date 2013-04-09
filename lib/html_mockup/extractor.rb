@@ -59,7 +59,7 @@ module HtmlMockup
     
     # Runs the extractor on a single file and return processed source.
     def extract_source_from_file(file_path, env = {})
-      source = HtmlMockup::Template.open(file_path, :partial_path => self.project.partial_path).render(env)
+      source = HtmlMockup::Template.open(file_path, :partial_path => self.project.partial_path).render(env.dup)
 
       if @options[:url_relativize]
         source = relativize_urls(source, file_path)
