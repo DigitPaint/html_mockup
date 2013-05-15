@@ -2,6 +2,8 @@ require 'hpricot'
 require File.dirname(__FILE__) + '/resolver'
 
 module HtmlMockup
+  
+  # @deprecated Don't use the extractor anymore, use release.use(:mockup, options) processor and release.use(:url_relativizer, options) processor
   class Extractor
     
     attr_reader :project, :target_path

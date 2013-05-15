@@ -193,6 +193,8 @@ module HtmlMockup
     # @param Hash options Options hash passed to extractor
     #
     # @see  HtmlMockup::Extractor for more information
+    # 
+    # @deprecated Don't use the extractor anymore, use release.use(:mockup, options) processor
     def extract(options = {})
       @extractor_options = options
     end
@@ -202,8 +204,16 @@ module HtmlMockup
       # Validate paths
       validate_paths!
       
-      # Extract valid mockup
-      run_extractor!
+      # Extract mockup
+      
+      if @stack.detect{|(processor, options)| processor === HtmlMockup::Release::Processors::Mockup }
+        # New style defined mockup processor
+        copy_source_path_to_build_path!
+      else
+        e = Extractor.new(self.project, self.build_path, @extractor_options)
+        self.warn(e, "The extractor is deprecated use the :mockup and :url_relativizer processors instead")
+        e.run!
+      end
       
       # Run stack
       run_stack!
@@ -256,9 +266,9 @@ module HtmlMockup
       end
     end
     
-    def run_extractor!
-      extractor = Extractor.new(self.project, self.build_path, @extractor_options)
-      extractor.run!
+    def copy_source_path_to_build_path!
+      mkdir(self.build_path)
+      cp_r(self.source_path.children, self.build_path)
     end
     
     def run_stack!
