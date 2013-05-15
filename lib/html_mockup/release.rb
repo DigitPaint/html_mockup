@@ -217,7 +217,7 @@ module HtmlMockup
     end    
     
     def log(part, msg)
-      puts part.class.to_s + " : " + msg.to_s
+      puts "\033[37m#{part.class.to_s}\033[0m" + " : " + msg.to_s
     end
     
     # @param [Array] globs an array of file path globs that will be globbed against the build_path
