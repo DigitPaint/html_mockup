@@ -216,9 +216,16 @@ module HtmlMockup
       
     end    
     
+    # Write out a log message
     def log(part, msg)
       puts "\033[37m#{part.class.to_s}\033[0m" + " : " + msg.to_s
     end
+    
+    # Write out a warning message
+    def warn(part, msg)
+      puts "\033[37m#{part.class.to_s}\033[0m" + " : " + "\033[31m#{msg.to_s}\033[0m"
+    end
+    
     
     # @param [Array] globs an array of file path globs that will be globbed against the build_path
     # @param [Array] excludes an array of regexps that will be excluded from the result
