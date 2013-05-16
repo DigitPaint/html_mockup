@@ -13,10 +13,9 @@ module HtmlMockup
       
       def initialize(project)
         @project = project
-        root,partial_path = project.html_path, project.partial_path
+        @docroot = project.html_path
         
-        @docroot = root
-        @partial_path = partial_path
+        @resolver = Resolver.new(@docroot)
         @file_server = ::Rack::File.new(@docroot)
       end
 
@@ -24,9 +23,7 @@ module HtmlMockup
         url = env["PATH_INFO"]
         env["MOCKUP_PROJECT"] = project
         
-        resolver = Resolver.new(@docroot)
-
-        if template_path = resolver.url_to_path(url)
+        if template_path = @resolver.url_to_path(url)
           env["rack.errors"].puts "Rendering template #{template_path.inspect} (#{url.inspect})"
           begin
             templ = ::HtmlMockup::Template.open(template_path, :partials_path => @project.partials_path, :layouts_path => @project.layouts_path)
