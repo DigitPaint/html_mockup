@@ -25,21 +25,21 @@ module HtmlMockup
         
         if template_path = @resolver.url_to_path(url)
           env["rack.errors"].puts "Rendering template #{template_path.inspect} (#{url.inspect})"
-          begin
+          # begin
             templ = ::HtmlMockup::Template.open(template_path, :partials_path => @project.partials_path, :layouts_path => @project.layouts_path)
             resp = ::Rack::Response.new do |res|
               res.status = 200
               res.write templ.render(env)
             end
             resp.finish
-          rescue StandardError => e
-            env["rack.errors"].puts "  #{e.message}"
-            resp = ::Rack::Response.new do |res|
-              res.status = 500
-              res.write "An error occurred"
-            end
-            resp.finish
-          end
+          # rescue StandardError => e
+          #   env["rack.errors"].puts "#{e.message}\n #{e.backtrace.join("\n")}\n\n"
+          #   resp = ::Rack::Response.new do |res|
+          #     res.status = 500
+          #     res.write "An error occurred"
+          #   end
+          #   resp.finish
+          # end
         else
           env["rack.errors"].puts "Invoking file handler for #{url.inspect}"
           @file_server.call(env)
