@@ -96,7 +96,7 @@ module HtmlMockup
     
     def banner(project)
       puts "  Html: \"#{project.html_path}\""
-      puts "  Partials: \"#{project.partial_path}\" (#{HtmlMockup::Template.partial_files(project.partial_path).size} found)"      
+      puts "  Partials: \"#{project.partial_path}\""
     end
     
     # TODO: handle options
