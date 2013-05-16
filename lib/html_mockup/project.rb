@@ -20,7 +20,7 @@ module HtmlMockup
         :partial_path => @path + "partials"
       }.update(options)
       
-      paths = mockup_paths(@options[:html_path], @options[:partial_path])
+      paths = mockup_paths(@options[:html_path], @options[:partials_path] || @options[:partial_path])
       self.html_path = paths[0]
       self.partial_path = paths[1]
       
@@ -45,6 +45,8 @@ module HtmlMockup
     def partial_path=(p)
       @partial_path = Pathname.new(p).realpath
     end
+    alias :partials_path :partial_path
+    alias :partials_path= :partial_path=
         
     protected
     
