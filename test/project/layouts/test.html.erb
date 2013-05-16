@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%= document.title %></title>
+  </head>
+  <body>
+    <h1>H1 from layout</h1>
+    
+    <% @var_from_layout_before = "VAR from layout before yield is OK!" %>
+    
+    <!-- Template content -->
+    <%= yield %>
+    <!-- /Template content -->
+
+    <% @var_from_layout_after = "VAR from layout after yield is OK!" %>
+
+
+    <h2>Partials in layout</h2>
+    
+    <h3>ERB</h3>
+    <%= partial "test/erb", :locals => {:value => "value"} %>
+    
+    <h3>MD</h3>
+    <%= partial "test/markdown" %>
+    
+  </body>
+</html>
