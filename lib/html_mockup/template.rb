@@ -1,135 +1,125 @@
-require 'pathname'
-require 'strscan'
-require 'erb'
-require 'cgi'
 require 'tilt'
+require 'yaml'
+require 'ostruct'
+
+require File.dirname(__FILE__) + "/mockup_template"
 
 module HtmlMockup
   
-  class MissingPartial < StandardError; end
-  
   class Template
-  
+    
+    # The source
+    attr_accessor :source
+    
+    # Store the frontmatter
+    attr_accessor :data
+    
+    # The actual Tilt template
+    attr_accessor :template
+    
+    # The path to the source file for this template
+    attr_accessor :source_path
+    
     class << self
-      def open(filename, options={})
-        raise "Unknown file #{filename}" unless File.exist?(filename)
-        self.new(File.read(filename),options.update(:target_file => filename))
-      end
-      
-      # Returns all available partials in path
-      def partials(path)
-        available_partials = {}
-        path = Pathname.new(path)
-        self.partial_files(path).inject({}) do |mem,f|
-          name = f.to_s.split(".",2)[0]
-          mem[name] = (path + f).read
-          mem
-        end
-      end
-      
-      def partial_files(path)
-        filter = "**/*.part.{?h,h}tml"
-        files = []
-        Dir.chdir(Pathname.new(path)) do 
-          files = Dir.glob(filter)        
-        end
-        files
-      end
-      
-    end
-  
-    # Create a new HtmlMockupTemplate
-    #
-    # @param [String] source The template to parse
-    # @param [Hash] options See options
-    #
-    # @option options [String] partial_path Path where the partials reside (default: $0/../../partials)
-    # @option options [String] target_file Path of the processed file
-    def initialize(source, options={})
-      defaults = {
-        :partial_path => File.dirname(__FILE__) + "/../../partials/"
-      }
-      @source = source
-      @template = Tilt::ERBTemplate.new(options[:target_file].to_s){ @source }      
-      @options = defaults.update(options)
-      raise "Partial path '#{self.options[:partial_path]}' not found" unless File.exist?(self.options[:partial_path])
-    end
-  
-    attr_reader :template, :options, :scanner
-  
-    # Renders the template and returns it as a string
-    #
-    # ==== Parameters
-    # env<Hash>:: An environment hash (mostly used in combination with Rack)
-    #
-    # ==== Returns
-    # String:: The rendered template
-    #--
-    def render(env={})
-      @scanner = StringScanner.new(@template.render(Object.new, :env => env))      
-      out = ""
-    	while (partial = self.parse_partial_tag!) do
-    	  tag,params,scanned = partial
-    		# add new skipped content to output file
-    		out << scanned
-
-    		# scan until end of tag
-    		current_content = self.scanner.scan_until(/<!-- \[STOP:#{tag}\] -->/)
-    		out << (render_partial(tag, params, env) || current_content)
-    	end
-    	out << scanner.rest    
-    end
-  
-    def save(filename=self.options[:target_file])
-      File.open(filename,"w"){|f| f.write render}
-    end
-  
-    protected
-  
-    def available_partials(force=false)
-      return @_available_partials if @_available_partials && !force
-      @_available_partials = self.class.partials(self.options[:partial_path])
-    end
-  
-    def parse_partial_tag!
-      params = {}
-      scanned = ""
-      begin_of_tag = self.scanner.scan_until(/<!-- \[START:/)
-      return nil unless begin_of_tag
-      scanned << begin_of_tag
-      scanned << tag = self.scanner.scan(/[a-z0-9_\/\-]+/)
-      if scanned_questionmark = self.scanner.scan(/\?/)
-        scanned << scanned_questionmark
-        scanned << raw_params = self.scanner.scan_until(/\] -->/)
-        raw_params.gsub!(/\] -->$/,"")
-      
-        params = CGI.parse(raw_params)
-        params.keys.each{|k| params[k] = params[k].first }
-      else
-        scanned << self.scanner.scan_until(/\] -->/)
-      end
-
-      [tag,params,scanned]
-    end
-  
-    # Actually renders the tag as ERB
-    def render_partial(tag, params, env = {})
-      unless self.available_partials[tag]
-        raise MissingPartial.new("Could not find partial '#{tag}' in partial path '#{@options[:partial_path]}'")
-      end
-      template = Tilt::ERBTemplate.new{ self.available_partials[tag] }
-      context = TemplateContext.new(params)
-      "\n" + template.render(context, :env => env).rstrip + "\n<!-- [STOP:#{tag}] -->"
-    end
-  
-    class TemplateContext
-      # Params will be set as instance variables
-      def initialize(params)
-        params.each do |k,v|
-          self.instance_variable_set("@#{k}",v)
-        end
+      def open(path, options = {})
+        raise "Unknown file #{path}" unless File.exist?(path)
+        self.new(File.read(path), options.update(:source_path => path))
       end      
     end
-  
+    
+    
+    # @option options [String,Pathname] :source_path The path to the source of the template being processed
+    # @option options [String,Pathname] :layouts_path The path to where all layouts reside
+    # @option options [String,Pathname] :partials_path The path to where all partials reside    
+    def initialize(source, options = {})
+      @options = options
+      self.data, self.source = extract_front_matter(source)
+      self.template = Tilt.new(options[:source_path].to_s){ self.source }
+      
+      puts "!!! #{self.data.inspect}, #{@options.inspect}"
+      
+      if self.data[:layout] && layout_template_path = self.find_template(self.data[:layout], :layouts_path)
+        @layout_template = Tilt.new(layout_template_path.to_s)
+      end
+    end
+    
+    def render(env = {})
+      context = TemplateContext.new(self)
+      locals = {:document => OpenStruct.new(self.data)}
+
+      if @layout_template
+        @layout_template.render(context, locals) do
+          self.template.render(context, locals)
+        end
+      else
+        self.template.render(context, locals)
+      end
+      
+      
+    end
+    
+    
+    def find_template(name, path_type)
+      raise ArgumentError unless [:partials_path, :layouts_path].include?(path_type)
+      
+      @resolvers ||= {}        
+      @resolvers[path_type] ||= Resolver.new(@options[path_type])
+      
+      @resolvers[path_type].url_to_path(name)
+    end      
+    
+    protected
+    
+    # Get the front matter portion of the file and extract it.
+    def extract_front_matter(source)
+      fm_regex = /\A(---\s*\n.*?\n?)^(---\s*$\n?)/m
+      
+      if match = source.match(fm_regex)
+        source = source.sub(fm_regex, "")
+
+        begin
+          data = (YAML.load(match[1]) || {}).inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+        rescue *YAML_ERRORS => e
+          puts "YAML Exception: #{e.message}"
+          return false
+        end
+      else
+        return [{}, source]
+      end
+
+      [data, source]
+    rescue
+      [{}, source]
+    end
+    
   end
+  
+  class TemplateContext
+    
+    def initialize(template)
+      @_template = template
+    end
+    
+    def template
+      @_template
+    end
+    
+    def env
+      # TODO
+      {}
+    end
+    
+    def partial(name, options = {})
+      template_path = self.template.find_template(name, :partials_path)
+      puts "Calling partial #{name}, with template #{template_path}"      
+      if template_path
+        partial_template = Tilt.new(template_path.to_s)
+        partial_template.render(self, options[:locals] || {})
+      else
+        raise ArgumentError, "No such partial #{name}"
+      end
+    end
+    
+  end
+  
 end
