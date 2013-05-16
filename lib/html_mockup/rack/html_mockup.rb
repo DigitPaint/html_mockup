@@ -29,7 +29,7 @@ module HtmlMockup
         if template_path = resolver.url_to_path(url)
           env["rack.errors"].puts "Rendering template #{template_path.inspect} (#{url.inspect})"
           begin
-            templ = ::HtmlMockup::Template.open(template_path, :partial_path => @partial_path)
+            templ = ::HtmlMockup::Template.open(template_path, :partials_path => @project.partials_path, :layouts_path => @project.layouts_path)
             resp = ::Rack::Response.new do |res|
               res.status = 200
               res.write templ.render(env)
