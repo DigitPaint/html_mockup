@@ -8,29 +8,22 @@ module HtmlMockup
     def url_to_path(url, exact_match = false)
       path, qs, anch = strip_query_string_and_anchor(url.to_s)
       
-      extensions = %w{html htm}
-        
-      # Append index.extension if it's a diretory
-      if File.directory?(File.join(@base,path))
-        search_files = extensions.map{|p| File.join(@base,path,"index.#{p}")}
-      # If it's already a .extension file, return that file
-      elsif extensions.detect{|e| path =~ /\.#{e}\Z/ }
-        search_files = [File.join(@base,path)]
-      # If it ends with a slash or does not contain a . and it's not a directory
-      # try to add extenstions to see if that exists.
-      elsif (path =~ /\/$/) || (path =~ /^[^.]+$/)
-        search_files = extensions.map{|e| File.join(@base,"#{path}.#{e}") }
-      # Otherwise don't return anything at all.
-      else
-        if exact_match
-          search_files = [File.join(@base,path)]
-        else
-          search_files = []
-        end
+      path = File.join(@base, path)
+      
+      # It's a directory, add "/index"
+      if File.directory?(path)
+        path = File.join(path, "index")
       end
       
-      if file = search_files.find{|p| File.exist?(p) }
-        Pathname.new(file)
+      # 2. If it's .html
+      if path =~ /\.html\Z/
+        path.sub!(/\.html\Z/, "")
+      end
+      
+      extensions = Tilt.mappings.keys + Tilt.mappings.keys.map{|ext| "html.#{ext}"}
+
+      if found_extension = extensions.find { |ext| File.exist?(path + "." + ext) }
+        Pathname.new(path + "." + found_extension)
       end
     end
     
