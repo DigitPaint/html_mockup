@@ -28,13 +28,53 @@ module HtmlMockup::Release::Processors
     
     
     def run_on_file!(file_path, env = {})
-      source = self.extract_source_from_file(file_path, env)
-      File.open(file_path,"w"){|f| f.write(source) }
+      template = HtmlMockup::Template.open(file_path, :partials_path => self.project.partial_path, :layouts_path => self.project.layouts_path)
+      
+      # Clean up source file
+      FileUtils.rm(file_path)
+      
+      # Write out new file
+      File.open(self.target_path(file_path, template),"w"){|f| f.write(template.render(env.dup)) }
     end
     
     # Runs the extractor on a single file and return processed source.
     def extract_source_from_file(file_path, env = {})
       HtmlMockup::Template.open(file_path, :partials_path => self.project.partial_path, :layouts_path => self.project.layouts_path).render(env.dup)
+    end    
+    
+    protected
+    
+    def target_path(path, template)
+      # 1. If we have a double extension we rip of the template it's own extension and be done with it
+      parts = File.basename(path.to_s).split(".")
+      dir = Pathname.new(File.dirname(path.to_s))
+      
+      # 2. Try to figure out the extension based on the template's mime-type
+      mime_types = {
+        "text/html" => "html",
+        "text/css"  => "css",
+        "application/javascript" => "js",
+        "text/xml" => "xml",
+        "application/xml" => "xml",
+        "text/csv" => "csv",
+        "application/json" => "json"
+      }
+      extension = mime_types[template.template.class.default_mime_type]
+      
+      if parts.size > 2
+        # Strip extension
+        dir + parts[0..-2].join(".")
+      else
+        return path if extension.nil?
+        
+        if parts.size > 1
+          # Strip extension and replace with extension
+          dir + (parts[0..-2] << extension).join(".")
+        else
+          # Let's just add the extension
+          dir + (parts << extension).join(".")
+        end
+      end
     end    
     
   end
