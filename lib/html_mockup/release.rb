@@ -196,6 +196,7 @@ module HtmlMockup
     # 
     # @deprecated Don't use the extractor anymore, use release.use(:mockup, options) processor
     def extract(options = {})
+      self.warn(self, "Don't use the extractor anymore, use release.use(:mockup, options) and release.use(:url_relativizer, options) processors")
       @extractor_options = options
     end
     
@@ -205,15 +206,9 @@ module HtmlMockup
       validate_paths!
       
       # Extract mockup
+      copy_source_path_to_build_path!
       
-      if @stack.detect{|(processor, options)| processor === HtmlMockup::Release::Processors::Mockup }
-        # New style defined mockup processor
-        copy_source_path_to_build_path!
-      else
-        e = Extractor.new(self.project, self.build_path, @extractor_options)
-        self.warn(e, "The extractor is deprecated use the :mockup and :url_relativizer processors instead")
-        e.run!
-      end
+      validate_stack!
       
       # Run stack
       run_stack!
@@ -254,6 +249,8 @@ module HtmlMockup
     # = The runway =
     # ==============
     
+    # Checks if build path exists (and cleans it up)
+    # Checks if target path exists (if not, creates it)
     def validate_paths!
       if self.build_path.exist?
         log self, "Cleaning up previous build \"#{self.build_path}\""
@@ -263,6 +260,25 @@ module HtmlMockup
       if !self.target_path.exist?
         log self, "Creating target path \"#{self.target_path}\""
         mkdir self.target_path
+      end
+    end
+    
+    # Checks if deprecated extractor options have been set
+    # Checks if the mockup will be runned
+    def validate_stack!
+      
+      mockup_options = {}
+      relativizer_options = {}
+      run_relativizer = true
+      if @extractor_options
+        mockup_options = {:env => @extractor_options[:env]}
+        relativizer_options = {:url_attributes => @extractor_options[:url_attributes]}
+        run_relativizer = @extractor_options[:url_relativize]
+      end
+      
+      unless @stack.find{|(processor, options)| processor === HtmlMockup::Release::Processors::Mockup }
+        @stack.unshift([HtmlMockup::Release::Processors::UrlRelativizer.new, relativizer_options])        
+        @stack.unshift([HtmlMockup::Release::Processors::Mockup.new, mockup_options])
       end
     end
     
