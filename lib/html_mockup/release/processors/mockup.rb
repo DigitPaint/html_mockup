@@ -34,7 +34,7 @@ module HtmlMockup::Release::Processors
     
     # Runs the extractor on a single file and return processed source.
     def extract_source_from_file(file_path, env = {})
-      HtmlMockup::Template.open(file_path, :partial_path => self.project.partial_path).render(env.dup)
+      HtmlMockup::Template.open(file_path, :partials_path => self.project.partial_path, :layouts_path => self.project.layouts_path).render(env.dup)
     end    
     
   end
