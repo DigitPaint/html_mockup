@@ -71,7 +71,6 @@ module HtmlMockup
         # Old style templates
         template = Tilt::ERBTemplate.new(partial_template_path.to_s)
         context = TemplateContext.new(params)
-        puts context.instance_variables.inspect
         out = template.render(context, :env => scope.env)
       else
         # Not found        
