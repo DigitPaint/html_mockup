@@ -53,14 +53,11 @@ module HtmlMockup
       else
         self.template.render(context, locals)
       end
-      
-      
     end
     
-    
     def find_template(name, path_type)
-      raise ArgumentError unless [:partials_path, :layouts_path].include?(path_type)
-      
+      raise(ArgumentError, "path_type must be one of :partials_path or :layouts_path") unless [:partials_path, :layouts_path].include?(path_type)
+
       @resolvers ||= {}        
       @resolvers[path_type] ||= Resolver.new(@options[path_type])
       
