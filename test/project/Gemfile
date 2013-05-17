@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "html_mockup", :path => "/Users/flurin/Projects.local/libraries/html_mockup"
+gem "html_mockup", :path => File.dirname(__FILE__) + "/../../"
 gem "sass"
 gem "yui-compressor"
 gem "redcarpet"
