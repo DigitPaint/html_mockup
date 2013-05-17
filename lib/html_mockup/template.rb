@@ -33,10 +33,9 @@ module HtmlMockup
     # @option options [String,Pathname] :partials_path The path to where all partials reside    
     def initialize(source, options = {})
       @options = options
+      self.source_path = options[:source_path]
       self.data, self.source = extract_front_matter(source)
-      self.template = Tilt.new(options[:source_path].to_s){ self.source }
-      
-      puts "!!! #{self.data.inspect}, #{@options.inspect}"
+      self.template = Tilt.new(self.source_path.to_s){ self.source }
       
       if self.data[:layout] && layout_template_path = self.find_template(self.data[:layout], :layouts_path)
         @layout_template = Tilt.new(layout_template_path.to_s)
