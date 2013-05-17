@@ -43,6 +43,7 @@ module HtmlMockup
     end
     
     def render(env = {})
+      puts "Rendering #{self.source_path}"
       context = TemplateContext.new(self)
       locals = {:document => OpenStruct.new(self.data)}
 
