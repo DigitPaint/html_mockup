@@ -6,7 +6,7 @@ module HtmlMockup::Release::Processors
     def initialize(options={})
       @options = {
         :env => {},
-        :match => ["**/*.html"]
+        :match => Tilt.mappings.keys.map{|ext| "**/*.#{ext}" }
       }
       
       @options.update(options) if options            
