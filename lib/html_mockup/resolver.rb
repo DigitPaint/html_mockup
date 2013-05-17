@@ -2,6 +2,7 @@ module HtmlMockup
   class Resolver
     
     def initialize(path)
+      raise ArgumentError, "Resolver base path can't be nil" if path.nil?
       @base = Pathname.new(path)
     end
     
