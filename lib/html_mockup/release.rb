@@ -192,8 +192,6 @@ module HtmlMockup
     #
     # @param Hash options Options hash passed to extractor
     #
-    # @see  HtmlMockup::Extractor for more information
-    # 
     # @deprecated Don't use the extractor anymore, use release.use(:mockup, options) processor
     def extract(options = {})
       self.warn(self, "Don't use the extractor anymore, use release.use(:mockup, options) and release.use(:url_relativizer, options) processors")
