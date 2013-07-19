@@ -23,7 +23,10 @@ module HtmlMockup
         :html_path => @path + "html",
         :partial_path => @path + "partials",
         :layouts_path => @path + "layouts"
-      }.update(options)
+      }
+      
+      # Clumsy string to symbol key conversion
+      options.each{|k,v| @options[k.is_a?(String) ? k.to_sym : k] = v }
       
       self.html_path = @options[:html_path]
       self.partial_path = @options[:partials_path] || @options[:partial_path] || self.html_path + "../partials/"
