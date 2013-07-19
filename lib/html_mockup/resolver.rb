@@ -8,7 +8,7 @@ module HtmlMockup
     
     # @param [String] url The url to resolve to a path
     # @param [true,false] exact_match Wether or not to match exact paths, this is mainly used in the path_to_url method to match .js, .css, etc files.
-    def url_to_path(url, exact_match = false)
+    def find_template(url, exact_match = false)
       path, qs, anch = strip_query_string_and_anchor(url.to_s)
       
       path = File.join(@base, path)
@@ -33,6 +33,7 @@ module HtmlMockup
         Pathname.new(path + "." + found_extension)
       end
     end
+    alias :url_to_path :find_template
     
     
     # Convert a disk path on file to an url
