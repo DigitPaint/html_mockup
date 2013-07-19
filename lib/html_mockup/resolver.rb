@@ -6,17 +6,23 @@ module HtmlMockup
       @base = Pathname.new(path)
     end
     
+    # @param [String] url The url to resolve to a path
+    # @param [true,false] exact_match Wether or not to match exact paths, this is mainly used in the path_to_url method to match .js, .css, etc files.
     def url_to_path(url, exact_match = false)
       path, qs, anch = strip_query_string_and_anchor(url.to_s)
       
       path = File.join(@base, path)
+  
+      if exact_match && File.exist?(path)
+        return Pathname.new(path)
+      end
       
       # It's a directory, add "/index"
       if File.directory?(path)
         path = File.join(path, "index")
       end
       
-      # 2. If it's .html
+      # 2. If it's .html,we strip of the extension
       if path =~ /\.html\Z/
         path.sub!(/\.html\Z/, "")
       end
