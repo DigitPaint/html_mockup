@@ -24,6 +24,8 @@ module HtmlMockup::Release::Processors
       css_compressor = YUI::CssCompressor.new(compressor_options) 
       js_compressor = YUI::JavaScriptCompressor.new(compressor_options)
       
+      release.log self,  "Minifying #{options[:match].inspect}"
+      
       # Add version numbers and minify the files
       release.get_files(options[:match], options[:skip]).each do |f|
         type = f[/\.([^.]+)\Z/,1]
@@ -36,14 +38,14 @@ module HtmlMockup::Release::Processors
           minified = [header]
     
           # Actual minification
-          release.log self,  "Minifying #{f}"
+          release.debug self,  "Minifying #{f}"
           case type
           when "css"
             minified << css_compressor.compress(data)
           when "js"
             minified << js_compressor.compress(data)
           else
-            release.log self, "Error minifying: encountered unknown type \"#{type}\""
+            release.warn self, "Error minifying: encountered unknown type \"#{type}\""
             minified << data
           end
 
