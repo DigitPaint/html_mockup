@@ -13,6 +13,13 @@ require File.dirname(__FILE__) + "/w3c_validator"
 
 module HtmlMockup
   class Cli < Thor
+    
+    class_option :verbose,
+      :desc =>  "Set's verbose output",
+      :aliases => ["-v"],
+      :default => false,
+      :type => :boolean
+    
     desc "serve [directory]","Serve directory as HTML, defaults to current directory"
     method_options :port => :string, # Defaults to 9000
                    :html_path => :string, # The document root, defaults to "[directory]/html"
@@ -107,7 +114,7 @@ module HtmlMockup
         exit(1)
       end
       
-      Project.new(path, options)
+      Project.new(path, {:shell => self.shell}.update(options))
     end
 
     def w3cvalidate(file)
@@ -119,7 +126,6 @@ module HtmlMockup
       end
       validator.valid
     end
-    
  
   end
 end

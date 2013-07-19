@@ -12,6 +12,10 @@ module HtmlMockup
     # @attr :mockupfile [Mockupfile] The Mockupfile for this project
     attr_accessor :path, :html_path, :partial_path, :layouts_path, :mockupfile
     
+    attr_accessor :shell
+    
+    attr_accessor :options
+    
     def initialize(path, options={})
       @path = Pathname.new(path)
       
@@ -24,9 +28,14 @@ module HtmlMockup
       self.html_path = @options[:html_path]
       self.partial_path = @options[:partials_path] || @options[:partial_path] || self.html_path + "../partials/"
       self.layouts_path = @options[:layouts_path]
+      self.shell = @options[:shell]
       
       @mockupfile = Mockupfile.new(self)
       @mockupfile.load
+    end
+    
+    def shell
+      @shell ||= Thor::Base.shell.new
     end
     
     def server
