@@ -19,33 +19,26 @@ module HtmlMockup::Release::Processors
       
       @resolver = HtmlMockup::Resolver.new(release.build_path)
       release.get_files(options[:match]).each do |file_path|
-        orig_source = File.read(file_path)
-        File.open(file_path,"w") do |f| 
-          source = relativize_urls(orig_source, file_path, options)
-          f.write(source) 
-        end
-      end
-    end
-    
-    protected
-    
-    def relativize_urls(source, file_path, options={})
-      doc = Hpricot(source)
-      options[:url_attributes].each do |attribute|
-        (doc/"*[@#{attribute}]").each do |tag|
-          converted_url = @resolver.url_to_relative_url(tag[attribute], file_path)
-              
-          case converted_url
-          when String
-            tag[attribute] = converted_url
-          when nil
-            puts "Could not resolve link #{tag[attribute]} in #{file_path}"
+        release.debug(self, "Relativizing URLS in #{file_path}") do
+          orig_source = File.read(file_path)
+          File.open(file_path,"w") do |f| 
+            doc = Hpricot(orig_source)
+            options[:url_attributes].each do |attribute|
+              (doc/"*[@#{attribute}]").each do |tag|
+                converted_url = @resolver.url_to_relative_url(tag[attribute], file_path)
+                release.debug(self, "Converting '#{tag[attribute]}' to '#{converted_url}'")
+                case converted_url
+                when String
+                  tag[attribute] = converted_url
+                when nil
+                  release.log(self, "Could not resolve link #{tag[attribute]} in #{file_path}")
+                end
+              end
+            end
+            f.write(doc.to_original_html) 
           end
         end
       end
-      
-      doc.to_original_html      
     end
-        
   end
 end
