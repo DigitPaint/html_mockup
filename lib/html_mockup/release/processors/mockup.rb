@@ -6,7 +6,8 @@ module HtmlMockup::Release::Processors
     def initialize(options={})
       @options = {
         :env => {},
-        :match => Tilt.mappings.keys.map{|ext| "**/*.#{ext}" }
+        :match => ["**/*.{html,md,html.erb}"],
+        :skip => [/\Astylesheets/, /\Ajavascripts/]
       }
       
       @options.update(options) if options            
@@ -21,7 +22,7 @@ module HtmlMockup::Release::Processors
       
       release.log(self, "Processing mockup files")
       
-      release.get_files(options[:match]).each do |file_path|
+      release.get_files(options[:match], options[:skip]).each do |file_path|
         self.run_on_file!(file_path, @options[:env])
       end
     end
@@ -60,6 +61,11 @@ module HtmlMockup::Release::Processors
         "application/json" => "json"
       }
       extension = mime_types[template.template.class.default_mime_type]
+      
+      # Always return .html directly as it will cause too much trouble otherwise
+      if parts.last == "html"
+        return path
+      end
       
       if parts.size > 2
         # Strip extension
