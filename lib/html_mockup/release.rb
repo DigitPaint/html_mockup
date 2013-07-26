@@ -288,7 +288,7 @@ module HtmlMockup
         run_relativizer = @extractor_options[:url_relativize]
       end
       
-      unless @stack.find{|(processor, options)| processor === HtmlMockup::Release::Processors::Mockup }
+      unless @stack.find{|(processor, options)| processor.class == HtmlMockup::Release::Processors::Mockup }
         @stack.unshift([HtmlMockup::Release::Processors::UrlRelativizer.new, relativizer_options])        
         @stack.unshift([HtmlMockup::Release::Processors::Mockup.new, mockup_options])
       end
