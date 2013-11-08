@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + "/rack/html_validator"
 module HtmlMockup
   class Server
     
-    attr_reader :options
+    attr_reader :options, :server_options
     
     attr_reader :project
       
@@ -17,6 +17,8 @@ module HtmlMockup
       @stack = initialize_rack_builder
             
       @project = project
+      
+      @server_options = {}
       
       set_options(options)
     end
@@ -28,7 +30,7 @@ module HtmlMockup
         :handler => nil, # Autodetect
         :port => 9000
       }.update(options)
-      
+            
       self.port = @options[:port]
       self.handler = @options[:handler]      
     end
@@ -57,6 +59,10 @@ module HtmlMockup
       end
     end
     alias :run :run!
+    
+    def port=(p)
+      self.server_options[:Port] = p
+    end
         
     protected
     
@@ -104,13 +110,5 @@ module HtmlMockup
       handler
     end
     
-    
-    # Generate server options for handler
-    def server_options
-      {
-        :Port => self.port
-      }
-    end
-
   end
 end
