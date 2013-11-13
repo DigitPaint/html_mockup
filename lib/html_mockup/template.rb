@@ -44,7 +44,7 @@ module HtmlMockup
     
     def render(env = {})
       context = TemplateContext.new(self)
-      locals = {:document => OpenStruct.new(self.data)}
+      locals = {:document => OpenStruct.new(self.data), :env => env}
 
       if @layout_template
         @layout_template.render(context, locals) do
