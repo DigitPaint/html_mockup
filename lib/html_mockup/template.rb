@@ -43,9 +43,9 @@ module HtmlMockup
     end
     
     def render(env = {})
-      context = TemplateContext.new(self)
-      locals = {:document => OpenStruct.new(self.data), :env => env}
-
+      context = TemplateContext.new(self, env)
+      locals = {:document => OpenStruct.new(self.data)}
+      
       if @layout_template
         @layout_template.render(context, locals) do
           self.template.render(context, locals)
@@ -92,8 +92,8 @@ module HtmlMockup
   
   class TemplateContext
     
-    def initialize(template)
-      @_template = template
+    def initialize(template, env={})
+      @_template, @_env = template, env
     end
     
     def template
@@ -101,10 +101,9 @@ module HtmlMockup
     end
     
     def env
-      # TODO
-      {}
+      @_env
     end
-    
+        
     def partial(name, options = {})
       if template_path = self.template.find_template(name, :partials_path)
         # puts "Rendering partial #{name}, with template #{template_path}"
