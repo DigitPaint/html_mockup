@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency("thor", ["~> 0.16.0"])
   s.add_dependency("rack", [">= 1.0.0"])
-  s.add_dependency("tilt", [">= 0"])
+  s.add_dependency("tilt", ["~> 1.4.0"])
   s.add_dependency("sass", [">= 0"])
   s.add_dependency("hpricot", [">= 0.6.4"])
 end
