@@ -4,14 +4,14 @@ module HtmlMockup::Release::Processors
     
     def initialize(options = {})
       @options = {
-        :build_files => {"javascripts/site.build.js" => "javascripts"},
+        :build_files => {"javascripts/site.build.js" => {:dir => "javascripts"}},
         :rjs => "r.js",
         :node => "node"
       }.update(options)
     end
     
 
-    # @option options [Hash] :build_files An a hash of files to build (as key) and the target directory in the release to put it as value, each one will be built in a separate directory. (default is {"javascripts/site.build.js" => "javascripts"})
+    # @option options [Hash] :build_files An a hash of files to build (as key) and the target as a hash with either {:dir => "STRING"} or {:file => "STRING"} in the release to put it as value, each one will be built in a separate directory. (default is {"javascripts/site.build.js" => {:dir => "javascripts"}})
     # @option options [String] :node The system path for node (defaults to "node" in path)
     # @option options [String] :rjs The system path to the requirejs optimizer (r.js) (defaults to "../vendor/requirejs/r.js" (relative to source_path))
     def call(release, options={})
@@ -27,7 +27,21 @@ module HtmlMockup::Release::Processors
       
       @options[:build_files].each do |build_file, target|
         build_file = release.build_path + build_file
-        target = release.build_path + target
+        
+        if target.kind_of?(Hash)
+          if target[:dir]
+            target = target[:dir]
+            target_type = :dir
+          elsif target[:file]
+            target = target[:file]
+            target_type = :file
+          end
+        else
+          # Old style
+          target_type = :dir
+        end
+        
+        target = release.build_path + target        
         release.log(self, "Optimizing #{build_file}")
                 
         # Hack to create tempfile in build
@@ -37,7 +51,13 @@ module HtmlMockup::Release::Processors
         t.unlink
       
         # Run r.js optimizer
-        output = `#{rjs_command} -o #{build_file} dir=#{tmp_build_dir}`
+        if target_type == :dir
+          output = `#{rjs_command} -o #{build_file} dir=#{tmp_build_dir}`
+        else
+          output = `#{rjs_command} -o #{build_file} out=#{tmp_build_dir}/out.js`
+        end
+        
+        release.debug(self, output)
         
         # Check if r.js succeeded
         unless $?.success?
@@ -50,7 +70,11 @@ module HtmlMockup::Release::Processors
         end        
         
         # Move the tmp_build_dir to target
-        FileUtils.mv(tmp_build_dir, target)
+        if target_type == :dir
+          FileUtils.mv(tmp_build_dir, target)
+        end
+          FileUtils.mv("#{tmp_build_dir}/out.js", target)
+          FileUtils.rm_rf(tmp_build_dir)
       end
     end
     
