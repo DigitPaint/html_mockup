@@ -1,7 +1,16 @@
 # Changelog
 
-## Edge
+## Version 0.8.0
 * Fix zip finalizer to use options[:zip] in actuall executed command too
+* Logger now outputs color and has support for warning messages
+* Mockup templating is now fully handled with Tilt
+* Mockup extraction and URL relativization etc. for release are now done in their respective processors (will be added automatically if you haven't added them yourself.) This gives a fine-grained control over the point in time when these processors are ran.
+* Add a testproject to the repository
+* Add support for layouts
+* Add a `git_branch` finalizer that allows us to release to a branch on a repository (this makes it easy to release github pages)
+* Allow requirejs processor to work wih single files as well
+* Expose server options to mockup so you can configure a https server if you want
+* Minor fixes
 
 ## Version 0.7.4
 * Allow for underscores in .scss files when releasing
