@@ -1,10 +1,8 @@
 # Changelog
 
-## Version 0.8.1
+## Version 0.8.0
 * Set content type header in response when rendering templates
 * Add option to prompt user before performing rsync finalizer (defaults to true)
-
-## Version 0.8.0
 * Fix zip finalizer to use options[:zip] in actuall executed command too
 * Logger now outputs color and has support for warning messages
 * Mockup templating is now fully handled with Tilt
