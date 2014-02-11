@@ -2,9 +2,9 @@
 
 Gem::Specification.new do |s|
   s.name = "html_mockup"
-  s.version = "0.7.4"
+  s.version = "0.8.0"
   
-  s.authors = ["Flurin Egger", "Edwin van der Graaf"]
+  s.authors = ["Flurin Egger", "Edwin van der Graaf", "Joran Kapteijns"]
   s.email = ["info@digitpaint.nl", "flurin@digitpaint.nl"]  
   s.homepage = "http://github.com/digitpaint/html_mockup"
   s.summary = "HTML Mockup is a set of tools to create self-containing HTML mockups."
