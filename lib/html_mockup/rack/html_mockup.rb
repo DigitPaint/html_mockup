@@ -27,7 +27,9 @@ module HtmlMockup
           env["rack.errors"].puts "Rendering template #{template_path.inspect} (#{url.inspect})"
           # begin
             templ = ::HtmlMockup::Template.open(template_path, :partials_path => @project.partials_path, :layouts_path => @project.layouts_path)
+            mime = ::Rack::Mime.mime_type(File.extname(template_path), 'text/html')
             resp = ::Rack::Response.new do |res|
+              res.headers["Content-Type"] = mime if mime
               res.status = 200
               res.write templ.render(env)
             end
