@@ -1,5 +1,8 @@
 # Changelog
 
+## Version EDGE
+* Don't crash on non-existent partials/layouts path
+
 ## Version 0.8.0
 * Set content type header in response when rendering templates
 * Add option to prompt user before performing rsync finalizer (defaults to true)
