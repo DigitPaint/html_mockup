@@ -28,8 +28,8 @@ module HtmlMockup::Release::Processors
       release.log(self, "  Files   :", true)
       
       release.get_files(options[:match], options[:skip]).each do |file_path|
-        self.run_on_file!(file_path, @options[:env])
         release.log(self, "    Extract: #{file_path}", true)
+        self.run_on_file!(file_path, options[:env])
       end
     end
     

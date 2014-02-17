@@ -3,6 +3,7 @@
 ## Version EDGE
 * Don't crash on non-existent partials/layouts path
 * Add more logging in verbose mode when extracting mockup
+* Fix the passing of env options to mockup release processor
 
 ## Version 0.8.0
 * Set content type header in response when rendering templates
