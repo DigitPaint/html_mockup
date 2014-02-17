@@ -52,17 +52,28 @@ module HtmlMockup
     end
     
     def html_path=(p)
-      @html_path = Pathname.new(p).realpath
+      @html_path = self.realpath_or_path(p)
     end
     
     def partial_path=(p)
-      @partial_path = Pathname.new(p).realpath
+      @partial_path = self.realpath_or_path(p)
     end
     alias :partials_path :partial_path
     alias :partials_path= :partial_path=
     
     def layouts_path=(p)
-      @layouts_path = Pathname.new(p).realpath
+      @layouts_path = self.realpath_or_path(p)
+    end
+    
+    protected
+    
+    def realpath_or_path(path)
+      path = Pathname.new(path)
+      if path.exist?
+        path.realpath
+      else
+        path
+      end      
     end
     
   end
