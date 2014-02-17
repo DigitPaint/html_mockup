@@ -22,8 +22,14 @@ module HtmlMockup::Release::Processors
       
       release.log(self, "Processing mockup files")
       
+      release.log(self, "  Matching: #{options[:match].inspect}", true)      
+      release.log(self, "  Skiping : #{options[:skip].inspect}", true)            
+      release.log(self, "  Env     : #{options[:env].inspect}", true)
+      release.log(self, "  Files   :", true)
+      
       release.get_files(options[:match], options[:skip]).each do |file_path|
         self.run_on_file!(file_path, @options[:env])
+        release.log(self, "    Extract: #{file_path}", true)
       end
     end
     
