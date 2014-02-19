@@ -1,6 +1,6 @@
 # Changelog
 
-## Version EDGE
+## Version 0.8.1
 * Don't crash on non-existent partials/layouts path
 * Add more logging in verbose mode when extracting mockup
 * Fix the passing of env options to mockup release processor
