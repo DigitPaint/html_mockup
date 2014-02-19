@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + "/server"
 require File.dirname(__FILE__) + "/mockupfile"
 
 module HtmlMockup
-  # Loader for mockupfile
+  # Loader for mockupfile and project dependencies
   class Project
     
     # @attr :path [Pathname] The project path
@@ -33,8 +33,9 @@ module HtmlMockup
       self.layouts_path = @options[:layouts_path]
       self.shell = @options[:shell]
       
-      @mockupfile = Mockupfile.new(self)
-      @mockupfile.load
+      
+      load_dependencies!
+      load_mockup!
     end
     
     def shell
@@ -66,6 +67,17 @@ module HtmlMockup
     end
     
     protected
+    
+    def load_dependencies!
+      if Object.const_defined?(:Bundler)
+        Bundler.require(:default)
+      end
+    end
+    
+    def load_mockup!
+      @mockupfile = Mockupfile.new(self)
+      @mockupfile.load      
+    end
     
     def realpath_or_path(path)
       path = Pathname.new(path)

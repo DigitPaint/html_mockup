@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.8.2
+* If bundler is installed we're running Bundler.require automatically.
+
 ## Version 0.8.1
 * Don't crash on non-existent partials/layouts path
 * Add more logging in verbose mode when extracting mockup
