@@ -1,4 +1,4 @@
-[![Gem Version](https://badge.fury.io/rb/html_mockup.png)](http://badge.fury.io/rb/html_mockup)
+{<img src="https://badge.fury.io/rb/html_mockup.png" alt="Gem Version" />}[http://badge.fury.io/rb/html_mockup]
 
 == HtmlMockup
 
