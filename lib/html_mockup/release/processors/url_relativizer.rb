@@ -16,7 +16,7 @@ module HtmlMockup::Release::Processors
     def call(release, options={})
       options = {}.update(@options).update(options)
       
-      release.log(self, "Relativizing all URLS in #{options[:match].inspect} files in attributes #{options[:url_attributes].inspect}")
+      release.log(self, "Relativizing all URLS in #{options[:match].inspect} files in attributes #{options[:url_attributes].inspect}, skipping #{options[:skip].any? ? options[:skip].inspect : "none" }")
       
       @resolver = HtmlMockup::Resolver.new(release.build_path)
      release.get_files(options[:match], options[:skip]).each do |file_path|
