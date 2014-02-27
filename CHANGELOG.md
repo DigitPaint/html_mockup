@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.8.4
+* Fix requirejs processor to clean up the correct paths
+
 ## Version 0.8.3
 * Make the url relativizer respect :skip parameter
 

@@ -69,12 +69,14 @@ module HtmlMockup::Release::Processors
           FileUtils.rm_rf(target)
         end        
         
+        
         # Move the tmp_build_dir to target
         if target_type == :dir
           FileUtils.mv(tmp_build_dir, target)
-        end
+        else
           FileUtils.mv("#{tmp_build_dir}/out.js", target)
           FileUtils.rm_rf(tmp_build_dir)
+        end
       end
     end
     
