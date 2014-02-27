@@ -2,6 +2,7 @@
 
 ## Version 0.8.4
 * Fix requirejs processor to clean up the correct paths
+* Allow typing of Y to rsync instead of full "yes"
 
 ## Version 0.8.3
 * Make the url relativizer respect :skip parameter

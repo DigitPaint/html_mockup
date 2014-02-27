@@ -31,7 +31,7 @@ module HtmlMockup::Release::Finalizers
       # Validate options
       validate_options!(release, options)
       
-      if !options[:ask] || (prompt("Do you wish to upload to #{options[:host]}? Anything other than 'yes' will cancel: ")) == 'yes'
+      if !options[:ask] || (prompt("Do you wish to upload to #{options[:host]}? Type y[es]: ")) =~ /\Ay(es)?\Z/
         begin
           `#{@options[:rsync]} --version`
         rescue Errno::ENOENT
