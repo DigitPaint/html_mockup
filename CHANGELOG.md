@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 0.8.3
+* Make the url relativizer respect :skip parameter
+
 ## Version 0.8.2
 * If bundler is installed we're running Bundler.require automatically.
 

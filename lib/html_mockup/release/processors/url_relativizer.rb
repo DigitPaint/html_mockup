@@ -6,7 +6,8 @@ module HtmlMockup::Release::Processors
     def initialize(options={})
       @options = {
         :url_attributes => %w{src href action},
-        :match => ["**/*.html"]
+        :match => ["**/*.html"],
+        :skip => []
       }
       
       @options.update(options) if options            
@@ -18,7 +19,7 @@ module HtmlMockup::Release::Processors
       release.log(self, "Relativizing all URLS in #{options[:match].inspect} files in attributes #{options[:url_attributes].inspect}")
       
       @resolver = HtmlMockup::Resolver.new(release.build_path)
-      release.get_files(options[:match]).each do |file_path|
+     release.get_files(options[:match], options[:skip]).each do |file_path|
         release.debug(self, "Relativizing URLS in #{file_path}") do
           orig_source = File.read(file_path)
           File.open(file_path,"w") do |f| 
