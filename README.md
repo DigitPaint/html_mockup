@@ -1,89 +1,94 @@
-{<img src="https://badge.fury.io/rb/html_mockup.png" alt="Gem Version" />}[http://badge.fury.io/rb/html_mockup]
+# HtmlMockup
 
-== HtmlMockup
+[![Gem Version](https://badge.fury.io/rb/html_mockup.png)](http://badge.fury.io/rb/html_mockup)
 
-HTML Mockup is a set of tools to create self-containing HTML mockups. HtmlMockup gives you the flexibility
-of a templatinglanguage but at the same time keeps all HTML files viewable. HTML comments are 
-used to  determine what partial (sub-template) to render.
+## What is it?
 
-HtmlMockup also provides tools for HTML validation. 
+HtmlMockup is your friendly front-end development toolbox! It helps you with these 4 things:
 
-=== Requirements
-HtmlMockup requires the following dependencies
+1. **Generate** : Set up your projects
+1. **Serve** : Development server
+1. **Test** : Test/lint your stuff
+1. **Release** : Release your code
 
-* Ruby 1.8.x (or 1.9.x)
-* Rubygems
-* Thor (to use mockup binary)
-* Rack > 1.0 (to use mockup serve) 
+## Get started
 
-=== Usage
+We assume you have a working Ruby 1.9.x or higher running.
 
-Just write regular HTML files and include comment's like this: 
+1. Install HtmlMockup
 
-  <!-- [START:partial_name] -->Text<!-- [STOP:partial_name] -->
+    ```shell
+    gem install html_mockup
+    ```
 
-The data between the tags will be replaced by the partial contents. Partials are searched in
-"../partials" relative to the directory the script you run resides in. This can be overridden with
-commandline parameters. Partials always must have a .part.r?html ending and are evaluated as ERB during
-insertion.
+1. Create a new project
 
-=== Syntax for HTML files
+    ```shell
+    mockup generate new PROJECT_DIR
+    ```
 
-==== Standard partials
+    Replace `PROJECT_DIR` with your project name
 
-  <!-- [START:partial_name] -->Text<!-- [STOP:partial_name] -->
+1. Start the development server
 
-==== Pass parameters to partials
+    ```shell
+    mockup serve
+    ```
 
-You can pass in parameters to partials in the format of key=value&key2=value2 (it's just a regular CGI
-query string and is parsed by CGI#parse). The partials wich are evaluated as ERB can access the variables
-through standard instance methods. The example below would create the instance variable @key.
+    Open your webbrowser and go to `http://localhost:9000/`
 
-  <!-- [START:partial_name?key=value] -->Text<!-- [STOP:partial_name] -->
+1. Release your project
 
-=== Partials in subdirectories
+    ```shell
+    mockup release
+    ```
 
-The partials path can have it's own directory structure. You can create tags with slashes in them
-to access partials in subdirectories.
+## Where to go from here?
 
+Read more documentation:
 
-=== Mockup commandline
+* [**Templating** Learn the power of HtmlMockup built in templating](docs/templating.md)
+* [**CLI** Learn about the different `mockup` commands](docs/cli.md)
+* [**Mockupfile** Learn how to configure and extend your Project](docs/mockupfile.md)
 
-==== mockup serve [directory]
+## Why?
 
-Serve can be used during development as a simple webserver (Puma, Mongrel, Thin, Webrick). It also supports on-the-fly HTML validation. 
+When we started with HtmlMockup there was no Grunt/Gulp/whatever and with us being a Ruby shop we wrote HtmlMockup. Since it's beginning it has evolved into quite a powerful tool. 
 
-The directory to serve must contain `[directory]/html` and `[directory]/partials` (unless you have specified `--partial_path` and `--html_path`)
+Why would HtmlMockup be better than any other?
+It's not it just does some things differently.
 
-Options:
---port:: The port the server should listen on. Defaults to 9000
---partial_path:: the path where the partial files can be found (*.part.html), defaults to directory `[directory]/partials`
---html_path:: the path where the html files can be found (*.html), defaults to directory `[directory]/html`
---validate:: Flag to set wether or not we should validate all html files (defaults to false)
+* Ruby
+* Code over configuration
+* Based on little modules, simple to extend
+* Streams & files
+* 4 easy commands separate concerns
 
-==== mockup release [directory]
+## Contributors
 
-Makes a release of the current mockup project
+[View contributors](https://github.com/digitpaint/html_mockup/graphs/contributors)
 
-==== mockup new [directory]
+## License
 
-Generate creates a directory structure in directory for use with new HTML mockups.
+(The MIT License)
 
-==== mockup extract [source_path] [target_path]
+Copyright (c) 2014 Digitpaint
 
-Extract a fully relative html mockup into target_path. It will expand all absolute href's, src's and action's into relative links if they are absolute
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
-Options:
---partial_path:: Defaults to [directory]/partials
---filter:: What files should be converted defaults to **/*.html
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
-==== mockup validate [directory/file]
-
-Validates all files within directory or just file with the W3C validator webservice. 
-
-Options:
---show_valid:: Flag to print a line for each valid file too (defaults to false)
---filter:: What files should be validated, defaults to [^_]*.html
-
-=== Copyright & license
-Copyright (c) 2012 Flurin Egger, Edwin van der Graaf, DigitPaint, MIT Style License. (see MIT-LICENSE)
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
