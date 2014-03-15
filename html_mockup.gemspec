@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]  
   
   s.extra_rdoc_files = [
-    "README.rdoc"
-  ]  
+    "README.md"
+  ] + `git ls-files -- {doc}/*`.split("\n")
   
   s.rdoc_options = ["--charset=UTF-8"]
 
