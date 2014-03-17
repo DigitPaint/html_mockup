@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
   s.add_dependency("rack", [">= 1.0.0"])
   s.add_dependency("tilt", ["~> 1.4.0"])
   s.add_dependency("sass", [">= 0"])
+  s.add_dependency("yui-compressor", [">= 0"])
   s.add_dependency("hpricot", [">= 0.6.4"])
 
   s.add_development_dependency("test-unit", "~> 2.5.5")
