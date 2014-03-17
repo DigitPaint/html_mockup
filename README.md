@@ -54,7 +54,7 @@ Read more documentation:
 
 ## Why?
 
-When we started with HtmlMockup there was no Grunt/Gulp/whatever and with us being a Ruby shop we wrote HtmlMockup. Since it's beginning it has evolved into quite a powerful tool. 
+When we started with HtmlMockup there was no Grunt/Gulp/whatever and with us being a Ruby shop we wrote HtmlMockup. Since its beginning it has evolved into quite a powerful tool. 
 
 Why would HtmlMockup be better than any other?
 It's not it just does some things differently.
