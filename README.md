@@ -47,9 +47,9 @@ We assume you have a working Ruby 1.9.x or higher running.
 
 Read more documentation:
 
-* [**Templating** Learn the power of HtmlMockup built in templating](docs/templating.md)
-* [**CLI** Learn about the different `mockup` commands](docs/cli.md)
-* [**Mockupfile** Learn how to configure and extend your Project](docs/mockupfile.md)
+* [**Templating** Learn the power of HtmlMockup built in templating](doc/templating.md)
+* [**CLI** Learn about the different `mockup` commands](doc/cli.md)
+* [**Mockupfile** Learn how to configure and extend your Project](doc/mockupfile.md)
 
 ## Why?
 
