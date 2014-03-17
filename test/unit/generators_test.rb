@@ -34,15 +34,20 @@ module HtmlMockup
       assert_includes Generators::Generate.tasks, "new"
     end
 
-    def test_invoke_mocked_generator
+    def test_generator_generator
       generators = Generators::Generate.new
+      name = "tralal"
+      path = "./tmp"
+      generators.invoke :generator, [name, path]
+      assert File.exist? "#{path}/#{name}_generator.rb"
+    end
 
     def test_invoke_mocked_generator
       HtmlMockup::Generators::Base.register CustomGens::Generators::MockedGenerator
-
+      
       generators = Generators::Generate.new
       assert_raise NotImplementedError do
-	generators.invoke :mocked
+        generators.invoke :mocked
       end
     end
   end
