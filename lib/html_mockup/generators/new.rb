@@ -62,5 +62,6 @@ class HtmlMockup::Generators::NewGenerator < HtmlMockup::Generators::Base
     directory(".", ".")
   end
   
-  
 end
+
+HtmlMockup::Generators::Base.register HtmlMockup::Generators::NewGenerator
