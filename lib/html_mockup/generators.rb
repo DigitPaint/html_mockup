@@ -8,8 +8,8 @@ module HtmlMockup
 
     class Base < Thor::Group
       def self.inherited(sub)
-	name = sub.to_s.sub(/Generator$/, "").sub(/^.*Generators::/,"").downcase
-	Generate.register sub, name, name, "Run #{name}"
+	      name = sub.to_s.sub(/Generator$/, "").sub(/^.*Generators::/,"").downcase
+	      Generate.register sub, name, name, "Run #{name}"
       end
     end
 
