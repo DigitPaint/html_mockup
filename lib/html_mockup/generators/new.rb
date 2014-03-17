@@ -1,6 +1,6 @@
 require 'shellwords'
 
-class HtmlMockup::Generators::New < Thor::Group
+class HtmlMockup::Generators::NewGenerator < HtmlMockup::Generators::Base
   
   include Thor::Actions
   

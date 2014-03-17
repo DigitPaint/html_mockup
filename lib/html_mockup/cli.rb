@@ -11,21 +11,30 @@ require File.dirname(__FILE__) + "/project"
 require File.dirname(__FILE__) + "/generators"
 require File.dirname(__FILE__) + "/w3c_validator"
 
+if Object.const_defined?(:Bundler)
+  Bundler.require(:default)
+end
+
+
 module HtmlMockup
   class Cli < Thor
     
+    register Generators::Generate, "generate", "generate [COMMAND]", "Run a generator"
+
     class_option :verbose,
       :desc =>  "Set's verbose output",
       :aliases => ["-v"],
       :default => false,
       :type => :boolean
     
+
     desc "serve [directory]","Serve directory as HTML, defaults to current directory"
     method_options :port => :string, # Defaults to 9000
                    :html_path => :string, # The document root, defaults to "[directory]/html"
                    :partial_path => :string, # Defaults to [directory]/partials
                    :handler => :string, # The handler to use (defaults to mongrel)
                    :validate => :boolean # Run validation?
+
     def serve(path=".")
       
       server_options = {} 
@@ -82,11 +91,6 @@ module HtmlMockup
         puts "No such file/directory #{path}"
       end      
     end
-    
-    register HtmlMockup::Generators::New, "new", "new [directory]", ""
-    # Hack to register our options/description
-    tasks["new"].options = HtmlMockup::Generators::New.class_options
-    tasks["new"].description = HtmlMockup::Generators::New.desc
     
     desc "extract [source_path] [target_path]", "Extract a fully relative html mockup into target_path. It will expand all absolute href's, src's and action's into relative links if they are absolute"
     method_options :partial_path => :string, # Defaults to [directory]/partials

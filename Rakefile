@@ -1,4 +1,7 @@
-task :test do
-  ruby "test/unit/release/processors/require_js_test.rb"
-  ruby "test/unit/release/cleaner_test.rb"
+require 'rake/testtask'
+
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/unit/**/*_test.rb']
+  t.verbose = true
 end
