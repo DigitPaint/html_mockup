@@ -1,4 +1,11 @@
 require 'rubygems'
+
+# Require bundler gems if available
+if Object.const_defined?(:Bundler)
+  Bundler.require(:default)
+end
+
+
 require 'thor'
 require 'thor/group'
 
@@ -8,59 +15,32 @@ include FileUtils
 
 require File.dirname(__FILE__) + "/template"
 require File.dirname(__FILE__) + "/project"
-require File.dirname(__FILE__) + "/generators"
 require File.dirname(__FILE__) + "/w3c_validator"
-
-if Object.const_defined?(:Bundler)
-  Bundler.require(:default)
-end
 
 
 module HtmlMockup
-  class Cli < Thor
-    
-    register Generators::Generate, "generate", "generate [COMMAND]", "Run a generator"
+  module Cli; end
+end
 
-    class_option :verbose,
-      :desc =>  "Set's verbose output",
-      :aliases => ["-v"],
-      :default => false,
-      :type => :boolean
-    
+require File.dirname(__FILE__) + "/cli/command"
+require File.dirname(__FILE__) + "/cli/serve"
+require File.dirname(__FILE__) + "/cli/release"
+require File.dirname(__FILE__) + "/cli/generate"
 
-    desc "serve [directory]","Serve directory as HTML, defaults to current directory"
-    method_options :port => :string, # Defaults to 9000
-                   :html_path => :string, # The document root, defaults to "[directory]/html"
-                   :partial_path => :string, # Defaults to [directory]/partials
-                   :handler => :string, # The handler to use (defaults to mongrel)
-                   :validate => :boolean # Run validation?
+require File.dirname(__FILE__) + "/generators"
 
-    def serve(path=".")
-      
-      server_options = {} 
-      options.each{|k,v| server_options[k.to_sym] = v }
-      server_options[:server] = {}
-      [:port, :handler, :validate].each do |k|
-        server_options[:server][k] = server_options.delete(k) if server_options.has_key?(k)
-      end
-      
-      # Load the project, it should take care of all the paths
-      @project = initialize_project(path, server_options)
-      
-      server = @project.server
-      server.set_options(server_options[:server])
-      
-      puts "Running HtmlMockup with #{server.handler.inspect} on port #{server.port}"
-      puts banner(@project) 
-      
-      server.run!
-    end
+
+
+module HtmlMockup
+  class Cli::Base < Thor
     
-    desc "release [directory]", "Create a release for the project"
-    def release(path=".")
-      project = initialize_project(path, options)
-      project.release.run!
-    end
+    register Cli::Generate, "generate", "generate [COMMAND]", "Run a generator"
+
+    register Cli::Serve, "serve", "serve #{Cli::Serve.arguments.map{ |arg| arg.banner }.join(" ")}", Cli::Serve.desc
+    self.tasks["serve"].options = Cli::Serve.class_options
+
+    register Cli::Release, "release", "release #{Cli::Release.arguments.map{ |arg| arg.banner }.join(" ")}", Cli::Release.desc
+    self.tasks["release"].options = Cli::Release.class_options
     
     desc "validate [directory/file]", "Validates the file or all HTML in directory"
     method_options :show_valid => :boolean, # Also print a line for each valid file
@@ -105,22 +85,6 @@ module HtmlMockup
     
     protected
     
-    def banner(project)
-      puts "  Html: \"#{project.html_path}\""
-      puts "  Partials: \"#{project.partial_path}\""
-    end
-    
-    # TODO: handle options
-    def initialize_project(path, options={})
-      
-      if((Pathname.new(path) + "../partials").exist?)
-        puts "[ERROR]: Don't use the \"html\" path, use the project base path instead"
-        exit(1)
-      end
-      
-      Project.new(path, {:shell => self.shell}.update(options))
-    end
-
     def w3cvalidate(file)
       validator = W3CValidator.new(File.read(file))
       validator.validate!  
@@ -132,4 +96,5 @@ module HtmlMockup
     end
  
   end
+
 end

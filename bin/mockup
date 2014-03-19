@@ -2,4 +2,4 @@
 
 require File.dirname(__FILE__) + "/../lib/html_mockup/cli"
 
-HtmlMockup::Cli.start
+HtmlMockup::Cli::Base.start

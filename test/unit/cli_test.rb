@@ -5,7 +5,7 @@ module HtmlMockup
   class CliTest < Test::Unit::TestCase
 
     def test_register_generators
-      assert_includes Cli.subcommands, "generate"
+      assert_includes Cli::Base.subcommands, "generate"
     end
 
   end
