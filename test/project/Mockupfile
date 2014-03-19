@@ -1,3 +1,4 @@
+require File.dirname(__FILE__) + "/lib/generators/test"
 
 mockup.project.options[:verbose] = true;
 
