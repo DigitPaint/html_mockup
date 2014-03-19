@@ -72,17 +72,6 @@ module HtmlMockup
       end      
     end
     
-    desc "extract [source_path] [target_path]", "Extract a fully relative html mockup into target_path. It will expand all absolute href's, src's and action's into relative links if they are absolute"
-    method_options :partial_path => :string, # Defaults to [directory]/partials
-                   :filter => :string # What files should be converted defaults to **/*.html
-    def extract(source_path=".", target_path="../out")
-      project = initialize_project(source_path)
-      extractor = HtmlMockup::Extractor.new(project, target_path)
-      puts "Extracting mockup"
-      puts banner(project)
-      extractor.run!
-    end
-    
     protected
     
     def w3cvalidate(file)
