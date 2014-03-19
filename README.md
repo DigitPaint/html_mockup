@@ -1,6 +1,7 @@
 # HtmlMockup
 
 [![Gem Version](https://badge.fury.io/rb/html_mockup.png)](http://badge.fury.io/rb/html_mockup)
+[![Build Status](https://travis-ci.org/DigitPaint/html_mockup.png?branch=feature-generators)](https://travis-ci.org/DigitPaint/html_mockup)
 
 ## What is it?
 
@@ -53,7 +54,7 @@ Read more documentation:
 
 ## Why?
 
-When we started with HtmlMockup there was no Grunt/Gulp/whatever and with us being a Ruby shop we wrote HtmlMockup. Since it's beginning it has evolved into quite a powerful tool. 
+When we started with HtmlMockup there was no Grunt/Gulp/whatever and with us being a Ruby shop we wrote HtmlMockup. Since its beginning it has evolved into quite a powerful tool. 
 
 Why would HtmlMockup be better than any other?
 It's not it just does some things differently.

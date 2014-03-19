@@ -1,6 +1,6 @@
 require 'shellwords'
 
-class HtmlMockup::Generators::New < Thor::Group
+class HtmlMockup::Generators::NewGenerator < Thor::Group
   
   include Thor::Actions
   
@@ -62,5 +62,6 @@ class HtmlMockup::Generators::New < Thor::Group
     directory(".", ".")
   end
   
-  
 end
+
+HtmlMockup::Generators::Base.register HtmlMockup::Generators::NewGenerator

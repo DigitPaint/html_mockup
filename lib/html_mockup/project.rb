@@ -33,8 +33,6 @@ module HtmlMockup
       self.layouts_path = @options[:layouts_path]
       self.shell = @options[:shell]
       
-      
-      load_dependencies!
       load_mockup!
     end
     
@@ -67,13 +65,7 @@ module HtmlMockup
     end
     
     protected
-    
-    def load_dependencies!
-      if Object.const_defined?(:Bundler)
-        Bundler.require(:default)
-      end
-    end
-    
+
     def load_mockup!
       @mockupfile = Mockupfile.new(self)
       @mockupfile.load      

@@ -1,0 +1,13 @@
+class <%= name.capitalize %>Generator < HtmlMockup::Generators::Base
+  
+  include Thor::Actions
+  
+  desc "<%= name.capitalize %> generator helps you doing ... and ..."
+  argument :path, :type => :string, :required => true, :desc => "Path to generate the new generator"
+  
+  def create_stuff
+    # your stuff
+  end
+end
+
+HtmlMockup::Generators::Base.register <%= name.capitalize %>Generator
