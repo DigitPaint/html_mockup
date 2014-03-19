@@ -2,8 +2,6 @@
 require "./lib/html_mockup/generators.rb"
 require "test/unit"
 
-require 'pry'
-
 module CustomGens
   module Generators
 
