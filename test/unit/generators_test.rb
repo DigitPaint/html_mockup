@@ -31,12 +31,16 @@ end
 
 module HtmlMockup
   class GeneratorTest < Test::Unit::TestCase
+    def setup
+      @cli = Cli::Base.new
+    end
 
     def test_working_project
       HtmlMockup::Generators::Base.register CustomGens::Generators::MockedWithProjectGenerator
       generators = Cli::Generate.new
+
       assert_raise StandardError do
-        generators.invoke :mockedwithproject
+        generators.invoke "mockedwithproject"
       end
     end
 

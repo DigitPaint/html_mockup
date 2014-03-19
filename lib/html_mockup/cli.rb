@@ -30,9 +30,32 @@ require File.dirname(__FILE__) + "/cli/generate"
 require File.dirname(__FILE__) + "/generators"
 
 
-
 module HtmlMockup
   class Cli::Base < Thor
+
+    def initialize(*args)
+      super
+      self.class.project = initialize_project
+    end
+
+    class << self
+      attr_accessor :project
+    end
+
+    class_option :path, 
+      :desc => "Project root path",
+      :type => :string, 
+      :required => false, 
+      :default => "."
+
+    class_option :html_path,
+      :desc => 'The document root, defaults to "[directory]/html"',
+      :type => :string
+
+
+    class_option :partial_path,
+      :desc => 'Defaults to [directory]/partials',
+      :type => :string
     
     register Cli::Generate, "generate", "generate [COMMAND]", "Run a generator"
 
@@ -73,6 +96,17 @@ module HtmlMockup
     end
     
     protected
+
+    # TODO: handle options
+    def initialize_project
+      if((Pathname.new(options[:path]) + "../partials").exist?)
+        puts "[ERROR]: Don't use the \"html\" path, use the project base path instead"
+        exit(1)
+      end
+      
+      Project.new(options[:path], {:shell => self.shell}.update(options))
+    end
+
     
     def w3cvalidate(file)
       validator = W3CValidator.new(File.read(file))
