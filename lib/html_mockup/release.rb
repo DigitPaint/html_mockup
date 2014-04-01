@@ -339,8 +339,8 @@ module HtmlMockup
       
       commenters = {
         :html => Proc.new{|s| "<!-- #{s} -->" },
-        :css => Proc.new{|s| "/* #{s} */" },
-        :js => Proc.new{|s| "/* #{s} */" }                
+        :css => Proc.new{|s| "/*! #{s} */" },
+        :js => Proc.new{|s| "/*! #{s} */" }                
       }
       
       commenter = commenters[options[:style]] || commenters[:js]
