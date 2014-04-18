@@ -7,13 +7,20 @@ module HtmlMockup
     end
     
     # @param [String] url The url to resolve to a path
-    # @param [true,false] exact_match Wether or not to match exact paths, this is mainly used in the path_to_url method to match .js, .css, etc files.
-    def find_template(url, exact_match = false)
+    # @param [Hash] options Options
+    #
+    # @option options [true,false] :exact_match Wether or not to match exact paths, this is mainly used in the path_to_url method to match .js, .css, etc files.
+    # @option options [String] :preferred_extension The part to chop off and re-add to search for more complex double-extensions. (Makes it possible to have context aware partials)
+    def find_template(url, options = {})
       path, qs, anch = strip_query_string_and_anchor(url.to_s)
-      
       path = File.join(@base, path)
+
+      options = {
+        :exact_match => false,
+        :preferred_extension => "html"  
+      }.update(options)
   
-      if exact_match && File.exist?(path)
+      if options[:exact_match] && File.exist?(path)
         return Pathname.new(path)
       end
       
@@ -22,9 +29,9 @@ module HtmlMockup
         path = File.join(path, "index")
       end
       
-      # 2. If it's .html,we strip of the extension
-      if path =~ /\.html\Z/
-        path.sub!(/\.html\Z/, "")
+      # 2. If it's preferred_extension, we strip of the extension
+      if path =~ /\.#{options[:preferred_extension]}\Z/
+        path.sub!(/\.#{options[:preferred_extension]}\Z/, "")
       end
       
       extensions = Tilt.default_mapping.template_map.keys + Tilt.default_mapping.lazy_map.keys
@@ -65,7 +72,7 @@ module HtmlMockup
       path, qs, anch = strip_query_string_and_anchor(url)
 
       # Get disk path
-      if true_path =  self.url_to_path(path, true)
+      if true_path =  self.url_to_path(path, :exact_match => true)
         path = self.path_to_url(true_path, relative_to_path)
         path += qs if qs
         path += anch if anch
