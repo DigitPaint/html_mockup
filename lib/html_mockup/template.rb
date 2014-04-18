@@ -1,4 +1,5 @@
 require 'tilt'
+require 'mime/types'
 require 'yaml'
 require 'ostruct'
 
@@ -63,9 +64,52 @@ module HtmlMockup
       
       @resolvers[path_type].url_to_path(name)
     end      
+    # Try to infer the final extension of the output file.
+    def target_extension
+      return @target_extension if @target_extension
+
+      if type = MIME::Types[self.target_mime_type].first
+        # Dirty little hack to enforce the use of .html instead of .htm
+        if type.sub_type == "html"
+          @target_extension = "html"
+        else
+          @target_extension = type.extensions.first
+        end
+      else
+        @target_extension = File.extname(self.source_path.to_s).sub(/^\./, "")
+      end
+    end
+
+    def source_extension
+      parts = File.basename(File.basename(self.source_path.to_s)).split(".")
+      if parts.size > 2
+        parts[-2..-1].join(".")
+      else
+        File.extname(self.source_path.to_s).sub(/^\./, "")
+      end
+    end
+
+    # Try to figure out the mime type based on the Tilt class and if that doesn't
+    # work we try to infer the type by looking at extensions (needed for .erb)
+    def target_mime_type
+      mime = self.template.class.default_mime_type
+      return mime if mime
+
+      path = File.basename(self.source_path.to_s)
+      mime = MIME::Types.type_for(path).first
+      return mime.to_s if mime
+
+      parts = File.basename(path).split(".")
+      if parts.size > 2
+        mime = MIME::Types.type_for(parts[0..-2].join(".")).first
+        return mime.to_s if mime
+      else
+        nil
+      end
+    end
     
     protected
-    
+
     # Get the front matter portion of the file and extract it.
     def extract_front_matter(source)
       fm_regex = /\A(---\s*\n.*?\n?)^(---\s*$\n?)/m
