@@ -59,11 +59,14 @@ module HtmlMockup
     def find_template(name, path_type)
       raise(ArgumentError, "path_type must be one of :partials_path or :layouts_path") unless [:partials_path, :layouts_path].include?(path_type)
 
+      return nil unless @options[path_type]
+
       @resolvers ||= {}        
       @resolvers[path_type] ||= Resolver.new(@options[path_type])
       
-      @resolvers[path_type].url_to_path(name)
-    end      
+      @resolvers[path_type].find_template(name, :preferred_extension => self.target_extension)
+    end
+
     # Try to infer the final extension of the output file.
     def target_extension
       return @target_extension if @target_extension
