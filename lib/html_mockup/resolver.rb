@@ -27,7 +27,10 @@ module HtmlMockup
         path.sub!(/\.html\Z/, "")
       end
       
-      extensions = Tilt.mappings.keys + Tilt.mappings.keys.map{|ext| "html.#{ext}"}
+      extensions = Tilt.default_mapping.template_map.keys + Tilt.default_mapping.lazy_map.keys
+
+      # We have to re-add preferred_extension again as we have stripped it in in step 2!
+      extensions += extensions.map{|ext| "#{options[:preferred_extension]}.#{ext}"}
 
       if found_extension = extensions.find { |ext| File.exist?(path + "." + ext) }
         Pathname.new(path + "." + found_extension)
