@@ -1,7 +1,7 @@
 # HtmlMockup
 
 [![Gem Version](https://badge.fury.io/rb/html_mockup.png)](http://badge.fury.io/rb/html_mockup)
-[![Build Status](https://travis-ci.org/DigitPaint/html_mockup.png?branch=feature-generators)](https://travis-ci.org/DigitPaint/html_mockup)
+[![Build Status](https://travis-ci.org/DigitPaint/html_mockup.png?branch=master)](https://travis-ci.org/DigitPaint/html_mockup)
 
 ## What is it?
 
