@@ -61,6 +61,13 @@ module HtmlMockup
       end
     end
 
+    # Front-matter
+
+    def test_front_matter_partial_access
+      template = Template.new("---\ntest: yay!\n---\n<%= partial 'test/front_matter' %>", @config.update(:source_path => @base + "html/test.html.erb"))
+      assert_equal template.render, "yay!"
+    end    
+
     # Partials
 
     def test_encoding_in_partials
