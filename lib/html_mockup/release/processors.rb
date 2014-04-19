@@ -17,4 +17,5 @@ require File.dirname(__FILE__) + "/processors/mockup"
 require File.dirname(__FILE__) + "/processors/url_relativizer"
 require File.dirname(__FILE__) + "/processors/requirejs"
 require File.dirname(__FILE__) + "/processors/sass"
+require File.dirname(__FILE__) + "/processors/yuicompressor"
 
