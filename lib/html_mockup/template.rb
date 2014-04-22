@@ -50,8 +50,14 @@ module HtmlMockup
       context = TemplateContext.new(self, env)
       
       if @layout_template
-        @layout_template.render(context, {}) do
-          self.template.render(context, {})
+        content_for_layout = self.template.render(context, {}) # yields
+        
+        @layout_template.render(context, {}) do |content_for|
+          if content_for
+            context._content_for_blocks[content_for]
+          else
+            content_for_layout
+          end
         end
       else
         self.template.render(context, {})
@@ -140,9 +146,10 @@ module HtmlMockup
   end
   
   class TemplateContext
-    
+    attr_accessor :_content_for_blocks
+
     def initialize(template, env={})
-      @_template, @_env = template, env
+      @_template, @_env = template, @_content_for_blocks = {}, env
     end
     
     def template
@@ -156,6 +163,18 @@ module HtmlMockup
     def env
       @_env
     end
+
+    def content_for(block_name, &fn)
+      template = Tilt.new(self.template.source_path.to_s){ "<%= yield %>" }
+      eval '_outvar.clear if defined? _outvar', fn.binding
+      @_content_for_blocks[block_name] = template.render(self, {}, &fn)
+
+      return nil
+    end
+
+    # def render_content_for(symbol)
+    #   return @_content_for_blocks[symbol]
+    # end
         
     def partial(name, options = {})
       if template_path = self.template.find_template(name, :partials_path)

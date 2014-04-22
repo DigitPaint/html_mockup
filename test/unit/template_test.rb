@@ -97,7 +97,20 @@ module HtmlMockup
 
     end
 
+    # Content for parts
 
+    def test_content_for
+      content_for_block = <<-ERB
+        Content before content_for
+        <% content_for :one do %>
+          Yield for <%= "one" %>
+        <% end %>
+        Content after content_for
+      ERB
+
+      template = Template.new(content_for_block, @config.update(:source_path => @base + "html/test.erb"))
+      # assert_equal template.render, "Yield for one"
+    end
 
 
 
