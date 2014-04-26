@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # Generators register themself on the CLI module
 require "./lib/html_mockup/template.rb"
 require "test/unit"
