@@ -152,18 +152,33 @@ module HtmlMockup
       @_template, @_env = template, @_content_for_blocks = {}, env
     end
     
+    # The current HtmlMockup::Template in use
     def template
       @_template
     end
 
+    # Access to the front-matter of the document (if any)
     def document
       @_data ||= OpenStruct.new(self.template.data)
     end
     
+    # The current environment variables.
     def env
       @_env
     end
 
+    # Capture content in blocks in the template for later use in the layout.
+    # Currently only works in ERB templates. Use like this in the template:
+    #
+    # ```
+    #   <% content_for :name %> bla bla <% end %>
+    # ```
+    #
+    # Place it like this in the layout:
+    #
+    # ```
+    #   <%= yield :name %>
+    # ```
     def content_for(block_name, &capture)
       raise ArgumentError, "content_for works only with ERB Templates" if !self.template.template.kind_of?(Tilt::ERBTemplate)
       eval "@_erbout_tmp = _erbout", capture.binding
