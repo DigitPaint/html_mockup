@@ -50,8 +50,14 @@ module HtmlMockup
       context = TemplateContext.new(self, env)
       
       if @layout_template
-        @layout_template.render(context, {}) do
-          self.template.render(context, {})
+        content_for_layout = self.template.render(context, {}) # yields
+        
+        @layout_template.render(context, {}) do |content_for|
+          if content_for
+            context._content_for_blocks[content_for]
+          else
+            content_for_layout
+          end
         end
       else
         self.template.render(context, {})
@@ -140,21 +146,48 @@ module HtmlMockup
   end
   
   class TemplateContext
-    
+    attr_accessor :_content_for_blocks
+
     def initialize(template, env={})
-      @_template, @_env = template, env
+      @_template, @_env = template, @_content_for_blocks = {}, env
     end
     
+    # The current HtmlMockup::Template in use
     def template
       @_template
     end
 
+    # Access to the front-matter of the document (if any)
     def document
       @_data ||= OpenStruct.new(self.template.data)
     end
     
+    # The current environment variables.
     def env
       @_env
+    end
+
+    # Capture content in blocks in the template for later use in the layout.
+    # Currently only works in ERB templates. Use like this in the template:
+    #
+    # ```
+    #   <% content_for :name %> bla bla <% end %>
+    # ```
+    #
+    # Place it like this in the layout:
+    #
+    # ```
+    #   <%= yield :name %>
+    # ```
+    def content_for(block_name, &capture)
+      raise ArgumentError, "content_for works only with ERB Templates" if !self.template.template.kind_of?(Tilt::ERBTemplate)
+      eval "@_erbout_tmp = _erbout", capture.binding
+      eval "_erbout = \"\"", capture.binding
+      t = Tilt::ERBTemplate.new(){ "<%= yield %>" }
+      @_content_for_blocks[block_name] = t.render(&capture)
+      return nil
+    ensure
+      eval "_erbout = @_erbout_tmp", capture.binding
     end
         
     def partial(name, options = {})

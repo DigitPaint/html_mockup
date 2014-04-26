@@ -1,0 +1,17 @@
+---
+layout : "test"
+title : "Content for"
+---
+Normal Yield
+
+<% content_for :one do %>
+  Yield for one <%= "bla" %>
+<% end %>
+
+And more normal stuff
+
+<% content_for :two do %>
+  Yield for two <%= "bla" %>
+<% end %>
+
+And the end of the normal stuff

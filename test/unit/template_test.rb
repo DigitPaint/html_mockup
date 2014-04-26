@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # Generators register themself on the CLI module
 require "./lib/html_mockup/template.rb"
 require "test/unit"
@@ -7,7 +8,8 @@ module HtmlMockup
     def setup
       @base = Pathname.new(File.dirname(__FILE__) + "/../project")
       @config = {
-        :partials_path => @base + "partials"
+        :partials_path => @base + "partials",
+        :layouts_path => @base + "layouts"
       }
       @template_path = @base + "html"
     end
@@ -97,8 +99,28 @@ module HtmlMockup
 
     end
 
+    # Content for parts
 
+    def test_content_for_not_returning_in_template
+      content_for_block = 'B<% content_for :one do %><%= "one" %><% end %>A'
 
+      template = Template.new(content_for_block, @config.update(:source_path => @base + "html/test.erb"))
+      assert_equal template.render, "BA"
+    end
+
+    def test_content_for_yield_in_layout
+      content_for_block = "---\nlayout: \"yield\"\n---\nB<% content_for :one do %><%= \"one\" %><% end %>A"
+
+      template = Template.new(content_for_block, @config.update(:source_path => @base + "html/test.html.erb"))
+      assert_equal template.render, "BAone"      
+    end
+
+    def test_content_for_yield_in_layout_without_content_for
+      content_for_block = "---\nlayout: \"yield\"\n---\nBA"
+
+      template = Template.new(content_for_block, @config.update(:source_path => @base + "html/test.html.erb"))
+      assert_equal template.render, "BA"
+    end    
 
 
   end
