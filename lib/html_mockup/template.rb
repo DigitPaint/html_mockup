@@ -164,17 +164,16 @@ module HtmlMockup
       @_env
     end
 
-    def content_for(block_name, &fn)
-      template = Tilt.new(self.template.source_path.to_s){ "<%= yield %>" }
-      eval '_outvar.clear if defined? _outvar', fn.binding
-      @_content_for_blocks[block_name] = template.render(self, {}, &fn)
-
+    def content_for(block_name, &capture)
+      raise ArgumentError, "content_for works only with ERB Templates" if !self.template.template.kind_of?(Tilt::ERBTemplate)
+      eval "@_erbout_tmp = _erbout", capture.binding
+      eval "_erbout = \"\"", capture.binding
+      t = Tilt::ERBTemplate.new(){ "<%= yield %>" }
+      @_content_for_blocks[block_name] = t.render(&capture)
       return nil
+    ensure
+      eval "_erbout = @_erbout_tmp", capture.binding
     end
-
-    # def render_content_for(symbol)
-    #   return @_content_for_blocks[symbol]
-    # end
         
     def partial(name, options = {})
       if template_path = self.template.find_template(name, :partials_path)
