@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gemspec
+gemspec :name => "html_mockup"
 
 gem "rake"
