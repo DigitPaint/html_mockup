@@ -44,5 +44,49 @@ module HtmlMockup
       # TODO
     end
 
+    def test_path_to_url
+      assert_equal @resolver.path_to_url(@base + "formats/erb.html.erb"), "/formats/erb.html.erb"
+    end
+
+    def test_path_to_url_relative_to_relative_path
+      assert_equal @resolver.path_to_url(@base + "formats/erb.html.erb", "../front_matter/erb.html.erb"), "../formats/erb.html.erb"
+    end
+
+    def test_path_to_url_relative_to_absolute_path
+      assert_equal @resolver.path_to_url(@base + "formats/erb.html.erb", @base.realpath + "front_matter/erb.html.erb"), "../formats/erb.html.erb"
+    end
+
   end
+
+  class ResolverMultipleTest < Test::Unit::TestCase
+    def setup
+      @base = Pathname.new(File.dirname(__FILE__) + "/../project")
+      @resolver = HtmlMockup::Resolver.new([@base + "html", @base + "partials"])
+    end
+
+    def test_add_load_path
+      @resolver.load_paths << @base + "henk"
+
+      assert_equal @resolver.load_paths, [@base + "html", @base + "partials", @base + "henk"]
+    end
+
+    def test_find_template_path
+      assert_equal @resolver.find_template("formats/index"), @base + "html/formats/index.html"
+      assert_equal @resolver.find_template("test/simple"), @base + "partials/test/simple.html.erb"
+    end
+
+    def test_find_template_path_ordered
+      assert_equal @resolver.find_template("formats/erb"), @base + "html/formats/erb.html.erb"
+
+      @resolver.load_paths.reverse!
+
+      assert_equal @resolver.find_template("formats/erb"), @base + "partials/formats/erb.html.erb"
+    end
+
+
+
+
+
+  end
+
 end

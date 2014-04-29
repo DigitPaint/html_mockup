@@ -2,6 +2,8 @@ require File.dirname(__FILE__) + "/lib/generators/test"
 
 mockup.project.options[:verbose] = true;
 
+mockup.project.partial_path = [mockup.project.path + "partials", mockup.project.path + "partials2"]
+
 mockup.serve do |s|
 end
 

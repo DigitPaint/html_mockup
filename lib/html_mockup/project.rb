@@ -55,13 +55,13 @@ module HtmlMockup
     end
     
     def partial_path=(p)
-      @partial_path = self.realpath_or_path(p)
+      @partial_path = self.single_or_multiple_paths(p)
     end
     alias :partials_path :partial_path
     alias :partials_path= :partial_path=
     
     def layouts_path=(p)
-      @layouts_path = self.realpath_or_path(p)
+      @layouts_path = self.single_or_multiple_paths(p)
     end
     
     protected
@@ -69,6 +69,14 @@ module HtmlMockup
     def load_mockup!
       @mockupfile = Mockupfile.new(self)
       @mockupfile.load      
+    end
+
+    def single_or_multiple_paths(p)
+      if p.kind_of?(Array)
+        p.map{|tp| self.realpath_or_path(tp) }
+      else
+        self.realpath_or_path(p)
+      end
     end
     
     def realpath_or_path(path)

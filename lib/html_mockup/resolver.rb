@@ -1,9 +1,13 @@
 module HtmlMockup
   class Resolver
+
+    attr_reader :load_paths
     
-    def initialize(path)
-      raise ArgumentError, "Resolver base path can't be nil" if path.nil?
-      @base = Pathname.new(path)
+    def initialize(paths)
+      raise ArgumentError, "Resolver base path can't be nil" if paths.nil?
+
+      # Convert to paths
+      @load_paths = [paths].flatten.map{|p| Pathname.new(p) }
     end
     
     # @param [String] url The url to resolve to a path
@@ -12,35 +16,40 @@ module HtmlMockup
     # @option options [true,false] :exact_match Wether or not to match exact paths, this is mainly used in the path_to_url method to match .js, .css, etc files.
     # @option options [String] :preferred_extension The part to chop off and re-add to search for more complex double-extensions. (Makes it possible to have context aware partials)
     def find_template(url, options = {})
-      path, qs, anch = strip_query_string_and_anchor(url.to_s)
-      path = File.join(@base, path)
+      orig_path, qs, anch = strip_query_string_and_anchor(url.to_s)
 
       options = {
         :exact_match => false,
         :preferred_extension => "html"  
       }.update(options)
+
+      paths = self.load_paths.map{|base| File.join(base, orig_path) }
   
-      if options[:exact_match] && File.exist?(path)
-        return Pathname.new(path)
-      end
-      
-      # It's a directory, add "/index"
-      if File.directory?(path)
-        path = File.join(path, "index")
-      end
-      
-      # 2. If it's preferred_extension, we strip of the extension
-      if path =~ /\.#{options[:preferred_extension]}\Z/
-        path.sub!(/\.#{options[:preferred_extension]}\Z/, "")
-      end
-      
-      extensions = Tilt.default_mapping.template_map.keys + Tilt.default_mapping.lazy_map.keys
+      paths.find do |path|
+        if options[:exact_match] && File.exist?(path)
+          return Pathname.new(path)
+        end      
+        
+        # It's a directory, add "/index"
+        if File.directory?(path)
+          path = File.join(path, "index")
+        end
+        
+        # 2. If it's preferred_extension, we strip of the extension
+        if path =~ /\.#{options[:preferred_extension]}\Z/
+          path.sub!(/\.#{options[:preferred_extension]}\Z/, "")
+        end
+        
+        extensions = Tilt.default_mapping.template_map.keys + Tilt.default_mapping.lazy_map.keys
 
-      # We have to re-add preferred_extension again as we have stripped it in in step 2!
-      extensions += extensions.map{|ext| "#{options[:preferred_extension]}.#{ext}"}
+        # We have to re-add preferred_extension again as we have stripped it in in step 2!
+        extensions += extensions.map{|ext| "#{options[:preferred_extension]}.#{ext}"}
 
-      if found_extension = extensions.find { |ext| File.exist?(path + "." + ext) }
-        Pathname.new(path + "." + found_extension)
+        if found_extension = extensions.find { |ext| File.exist?(path + "." + ext) }
+          return Pathname.new(path + "." + found_extension)
+        end
+
+        false #Next iteration
       end
     end
     alias :url_to_path :find_template
@@ -49,11 +58,15 @@ module HtmlMockup
     # Convert a disk path on file to an url
     def path_to_url(path, relative_to = nil)
 
-      path = Pathname.new(path).relative_path_from(@base).cleanpath
+      # Find the parent path we're in
+      path = Pathname.new(path).realpath
+      base = self.load_paths.find{|lp| path.to_s =~ /\A#{Regexp.escape(lp.realpath.to_s)}/ }
+
+      path = path.relative_path_from(base).cleanpath
       
       if relative_to
         if relative_to.to_s =~ /\A\//
-          relative_to = Pathname.new(File.dirname(relative_to.to_s)).relative_path_from(@base).cleanpath
+          relative_to = Pathname.new(File.dirname(relative_to.to_s)).relative_path_from(base).cleanpath
         else
           relative_to = Pathname.new(File.dirname(relative_to.to_s))
         end
