@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.9.0
+* More documentation!
+* More tests! (and CI!)
+* Thor and Tilt updates
+* Add possibility to load external generators from gems (with the `HtmlMockup::Generators::Base.register` method)
+* Partials now automatically prefer templates of the same extension as the parent
+* ERB Templates now support `content_for(:name) do ... end` blocks which can be yielded by `:name` in the layout
+* Multiple load paths for partials are now supported
+* Minor changes and fixes
+* First preparations for version 1.0.0. which will be called **Roger**
+
 ## Version 0.8.4
 * Fix requirejs processor to clean up the correct paths
 * Allow typing of Y to rsync instead of full "yes"
